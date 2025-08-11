@@ -61,18 +61,18 @@ const Navbar = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-gradient-to-br from-white via-primary-50 to-spiritual-50 border-t border-primary-200 shadow-xl"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-gradient-to-br from-white via-primary-50 to-spiritual-50 border-t border-primary-200 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto"
             >
-              <div className="py-4 space-y-2 text-center">
+              <div className="py-3 space-y-1 text-center">
                 {navItems.map((item) => (
                   <div key={item.name}>
                     <Link
                       to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className={`block px-8 py-4 font-bold text-lg transition-all duration-300 rounded-xl mx-4 ${
+                      className={`block px-6 py-3 font-bold text-base transition-all duration-300 rounded-xl mx-3 ${
                         isActive(item.path)
                           ? 'text-primary-600 bg-gradient-to-r from-primary-100 to-spiritual-100 shadow-lg'
                           : 'text-gray-700 hover:text-primary-600 hover:bg-white/90 hover:shadow-lg'
@@ -83,13 +83,13 @@ const Navbar = () => {
 
                     {/* Mobile Dropdown */}
                     {item.dropdown && (
-                      <div className="mt-2 space-y-1">
+                      <div className="mt-1 space-y-1">
                         {item.dropdown.map((subItem) => (
                           <Link
                             key={subItem.name}
                             to={subItem.path}
                             onClick={() => setIsOpen(false)}
-                            className="block px-6 py-3 text-base text-gray-600 hover:text-primary-600 hover:bg-white/70 transition-all duration-300 rounded-lg mx-8"
+                            className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600 hover:bg-white/70 transition-all duration-300 rounded-lg mx-6"
                           >
                             {subItem.name}
                           </Link>
@@ -99,20 +99,20 @@ const Navbar = () => {
                   </div>
                 ))}
 
-                <div className="pt-6 border-t border-primary-200 mt-6 text-center">
+                <div className="pt-4 border-t border-primary-200 mt-4 text-center pb-4">
                   <a
                     href="tel:407-782-5048"
-                    className="flex items-center justify-center space-x-3 px-8 py-3 text-primary-600 hover:text-primary-700 transition-all duration-300 rounded-xl mx-4 hover:bg-white/90 mb-4"
+                    className="flex items-center justify-center space-x-3 px-6 py-3 text-primary-600 hover:text-primary-700 transition-all duration-300 rounded-xl mx-3 hover:bg-white/90 mb-3"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-spiritual-600 rounded-full flex items-center justify-center shadow-lg">
-                      <Phone className="w-6 h-6 text-white" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-spiritual-600 rounded-full flex items-center justify-center shadow-lg">
+                      <Phone className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-xl">407-782-5048</span>
+                    <span className="font-bold text-lg">407-782-5048</span>
                   </a>
                   <Link
                     to="/contact"
                     onClick={() => setIsOpen(false)}
-                    className="block mx-4 btn-primary text-center text-xl py-5 shadow-xl hover:shadow-2xl font-bold"
+                    className="block mx-3 btn-primary text-center text-lg py-4 shadow-xl hover:shadow-2xl font-bold"
                   >
                     Book Session
                   </Link>
