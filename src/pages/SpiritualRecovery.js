@@ -187,8 +187,6 @@ const SpiritualRecovery = () => {
                     <span>Personalized approach</span>
                   </div>
                 </div>
-                <div className="text-4xl font-bold mb-4">$150</div>
-                <p className="text-white/80">per session</p>
               </div>
               <div className="text-center">
                 <Link

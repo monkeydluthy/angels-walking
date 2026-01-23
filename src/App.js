@@ -5,6 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import Home from './pages/Home';
@@ -18,10 +19,20 @@ import SelfCareQuiz from './pages/SelfCareQuiz';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Blog from './pages/Blog';
+import SuccessStories from './pages/SuccessStories';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminLayout from './pages/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminSuccessStories from './pages/admin/SuccessStories';
+import FormSubmissions from './pages/admin/FormSubmissions';
+import Analytics from './pages/admin/Analytics';
+import Settings from './pages/admin/Settings';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <div className="App min-h-screen flex flex-col">
+      <ScrollToTop />
       <Navbar />
       <main className="flex-grow">
         <AnimatePresence mode="wait">
@@ -37,6 +48,58 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Dashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/success-stories"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminSuccessStories />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/submissions"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <FormSubmissions />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Analytics />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Settings />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </AnimatePresence>
       </main>

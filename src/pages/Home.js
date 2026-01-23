@@ -160,7 +160,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/self-care-quiz"
-                className="bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center text-lg"
+                className="bg-healing-500 text-gray-900 hover:bg-healing-400 font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center text-lg"
               >
                 Take Self-Care Quiz
                 <ArrowRight className="w-5 h-5 ml-2" />

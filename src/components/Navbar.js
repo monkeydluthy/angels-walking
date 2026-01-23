@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sparkles, Phone } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const navItems = [
-    { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     {
       name: 'Services',
@@ -21,6 +20,7 @@ const Navbar = () => {
       ],
     },
     { name: 'Self-Care Quiz', path: '/self-care-quiz' },
+    { name: 'Success Stories', path: '/success-stories' },
     { name: 'FAQ', path: '/faq' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -37,15 +37,11 @@ const Navbar = () => {
             to="/"
             className="absolute left-0 flex items-center -ml-4 -pl-4"
           >
-            <div className="flex items-center justify-center w-10 h-10 bg-spiritual-gradient rounded-full">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div className="ml-2">
-              <h1 className="text-lg font-serif font-bold text-gradient">
-                Angels Walking
-              </h1>
-              <p className="text-xs text-gray-600 -mt-1">Spiritual Recovery</p>
-            </div>
+            <img
+              src="/logo-transparent.png"
+              alt="Angels Walking"
+              className="h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Hamburger Menu - Absolute right */}
@@ -128,18 +124,12 @@ const Navbar = () => {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-spiritual-gradient rounded-full">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-serif font-bold text-gradient">
-                  Angels Walking
-                </h1>
-                <p className="text-xs text-gray-600 -mt-1">
-                  Spiritual Recovery
-                </p>
-              </div>
+            <Link to="/" className="flex items-center">
+              <img
+                src="/logo-transparent.png"
+                alt="Angels Walking"
+                className="h-16 w-auto object-contain"
+              />
             </Link>
 
             {/* Desktop Navigation */}

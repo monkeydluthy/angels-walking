@@ -61,11 +61,11 @@
   }
 
   .gradient-bg {
-    background: linear-gradient(135deg, #faf5ff 0%, #fefce8 50%, #f0fdf4 100%);
+    background: linear-gradient(135deg, #f0f4f8 0%, #f0f8f8 50%, #fef8f0 100%);
   }
 
   .spiritual-gradient {
-    background: linear-gradient(135deg, #a855f7 0%, #eab308 50%, #22c55e 100%);
+    background: linear-gradient(135deg, #2C4A6B 0%, #5A9B9B 50%, #E6A85C 100%);
   }
 
   .card-hover {

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { supabase } from '../lib/supabase';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,8 +32,8 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'info@angelswalking.com',
-      link: 'mailto:info@angelswalking.com',
+      value: 'gladys@angelswalking.com',
+      link: 'mailto:gladys@angelswalking.com',
       description: 'Send us a message anytime',
     },
     {
@@ -78,17 +79,21 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const { error } = await supabase.from('form_submissions').insert([
+        {
+          form_type: 'contact',
+          data: data,
+        },
+      ]);
 
-      // Here you would typically send the data to your backend
-      console.log('Form data:', data);
+      if (error) throw error;
 
       toast.success(
         "Thank you! Your message has been sent. We'll get back to you within 24 hours."
       );
       reset();
     } catch (error) {
+      console.error('Form submission error:', error);
       toast.error('Error sending message. Please try again.');
     } finally {
       setIsSubmitting(false);

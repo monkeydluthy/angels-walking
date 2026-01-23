@@ -23,6 +23,7 @@ const Footer = () => {
     ],
     resources: [
       { name: 'Self-Care Quiz', path: '/self-care-quiz' },
+      { name: 'Success Stories', path: '/success-stories' },
       { name: 'FAQ', path: '/faq' },
       { name: 'Blog', path: '/blog' },
       { name: 'About', path: '/about' },
@@ -102,10 +103,10 @@ const Footer = () => {
                     Email
                   </p>
                   <a
-                    href="mailto:info@angelswalking.com"
+                    href="mailto:gladys@angelswalking.com"
                     className="text-white hover:text-spiritual-300 transition-colors duration-200 font-bold text-lg"
                   >
-                    info@angelswalking.com
+                    gladys@angelswalking.com
                   </a>
                 </div>
               </div>

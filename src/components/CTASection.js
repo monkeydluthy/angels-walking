@@ -46,7 +46,7 @@ const CTASection = () => {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20"
           >
-            <Sparkles className="w-5 h-5 text-yellow-400" />
+            <Sparkles className="w-5 h-5 text-healing-400" />
             <span className="text-white font-medium">
               Free Self-Care Assessment
             </span>
@@ -61,7 +61,7 @@ const CTASection = () => {
           >
             Transform Your Life
             <br />
-            <span className="text-yellow-400 font-bold">In Just 5 Minutes</span>
+            <span className="text-healing-400 font-bold">In Just 5 Minutes</span>
           </motion.h2>
 
           {/* Description */}
@@ -88,7 +88,7 @@ const CTASection = () => {
                 key={benefit.title}
                 className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-12 h-12 bg-healing-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <benefit.icon className="w-6 h-6 text-gray-900" />
                 </div>
                 <h3 className="text-white font-semibold text-lg mb-2">
@@ -110,7 +110,7 @@ const CTASection = () => {
           >
             <Link
               to="/self-care-quiz"
-              className="bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center text-lg"
+              className="bg-healing-500 text-gray-900 hover:bg-healing-400 font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center text-lg"
             >
               Take Self-Care Quiz
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -131,7 +131,7 @@ const CTASection = () => {
             className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-gray-300"
           >
             <div className="flex items-center space-x-2">
-              <Star className="w-5 h-5 text-yellow-400 fill-current" />
+              <Star className="w-5 h-5 text-healing-400 fill-current" />
               <span className="font-medium">500+ People Helped</span>
             </div>
             <div className="flex items-center space-x-2">

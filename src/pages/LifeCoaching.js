@@ -363,7 +363,7 @@ const LifeCoaching = () => {
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
+                      className="w-5 h-5 text-healing-400 fill-current"
                     />
                   ))}
                 </div>

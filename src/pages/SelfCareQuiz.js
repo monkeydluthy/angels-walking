@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { supabase } from '../lib/supabase';
 
 const SelfCareQuiz = () => {
   const navigate = useNavigate();
@@ -200,10 +201,7 @@ const SelfCareQuiz = () => {
     setIsLoading(true);
 
     try {
-      // Simulate AI processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Mock AI results based on answers
+      // Generate results
       const mockResults = {
         primaryFocus: getPrimaryFocus(),
         recommendations: generateRecommendations(),
@@ -211,9 +209,28 @@ const SelfCareQuiz = () => {
         nextSteps: getNextSteps(),
       };
 
+      // Submit quiz data to Supabase
+      const { error: submitError } = await supabase
+        .from('form_submissions')
+        .insert([
+          {
+            form_type: 'self_care_quiz',
+            data: {
+              answers: answers,
+              results: mockResults,
+            },
+          },
+        ]);
+
+      if (submitError) {
+        console.error('Error submitting quiz:', submitError);
+        // Continue anyway - don't block user from seeing results
+      }
+
       setResults(mockResults);
       toast.success('Your personalized results are ready!');
     } catch (error) {
+      console.error('Error generating results:', error);
       toast.error('Error generating results. Please try again.');
     } finally {
       setIsLoading(false);
