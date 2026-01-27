@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Place ID from Google Maps URL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            font-family: monospace;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #357ae8; }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .place-id-box {
+            background: #f0f0f0;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 15px 0;
+            cursor: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📍 Extract Place ID from Google Maps URL</h1>
+        
+        <div class="info">
+            <h3>💡 Solution for Service Area Businesses</h3>
+            <p>Since the business uses a service area (not a specific address), we can extract the Place ID directly from the Google Maps URL you already have.</p>
+        </div>
+
+        <div>
+            <label><strong>Paste your Google Maps URL here:</strong></label>
+            <textarea id="mapsUrl" placeholder="https://www.google.com/maps/place/... or https://maps.app.goo.gl/..."></textarea>
+            <button onclick="extractPlaceId()">Extract Place ID</button>
+            <button onclick="useApiMethod()">Or Use API with Coordinates</button>
+        </div>
+
+        <div class="result" id="result">
+            <h3>✅ Place ID Found!</h3>
+            <p><strong>Place ID:</strong></p>
+            <input type="text" id="placeId" class="place-id-box" readonly onclick="this.select(); document.execCommand('copy'); alert('Copied!');">
+            <p><strong>Add this to your .env file:</strong></p>
+            <code>REACT_APP_GOOGLE_PLACE_ID=<span id="placeIdForEnv"></span></code>
+            <button onclick="copyToClipboard()">Copy Place ID</button>
+        </div>
+
+        <div class="result error" id="error" style="display: none;">
+            <h3>❌ Error</h3>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        function extractPlaceId() {
+            const url = document.getElementById('mapsUrl').value.trim();
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+
+            if (!url) {
+                showError('Please paste a Google Maps URL');
+                return;
+            }
+
+            // Try to extract Place ID from various URL formats
+            let placeId = null;
+
+            // Method 1: From place_id parameter
+            const placeIdMatch = url.match(/[?&]place_id=([^&]+)/);
+            if (placeIdMatch) {
+                placeId = decodeURIComponent(placeIdMatch[1]);
+            }
+
+            // Method 2: From data parameter (!1s...)
+            if (!placeId) {
+                const dataMatch = url.match(/!1s([^!]+)/);
+                if (dataMatch) {
+                    // This might be an encoded Place ID
+                    const encoded = dataMatch[1];
+                    // Try to decode or use as-is
+                    placeId = encoded;
+                }
+            }
+
+            // Method 3: Use API to find by coordinates from URL
+            if (!placeId) {
+                const coordMatch = url.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+                if (coordMatch) {
+                    const lat = coordMatch[1];
+                    const lng = coordMatch[2];
+                    useReverseGeocode(lat, lng);
+                    return;
+                }
+            }
+
+            if (placeId) {
+                showResult(placeId);
+            } else {
+                showError('Could not extract Place ID from URL. Trying API method...');
+                // Try API method as fallback
+                useApiMethod();
+            }
+        }
+
+        async function useApiMethod() {
+            const url = document.getElementById('mapsUrl').value.trim();
+            const apiKey = "AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0";
+
+            // Extract coordinates from URL
+            const coordMatch = url.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+            if (!coordMatch) {
+                showError('Could not find coordinates in URL. Please paste the full Google Maps URL.');
+                return;
+            }
+
+            const lat = coordMatch[1];
+            const lng = coordMatch[2];
+
+            try {
+                // Use Reverse Geocoding to find Place ID
+                const reverseUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+                const response = await fetch(reverseUrl);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.results && data.results.length > 0) {
+                    // Find the result that matches the business
+                    const businessResult = data.results.find(r => 
+                        r.formatted_address.toLowerCase().includes('orlando') ||
+                        r.formatted_address.toLowerCase().includes('california') ||
+                        r.types.includes('establishment')
+                    ) || data.results[0];
+
+                    // Get Place ID from place_id field
+                    if (businessResult.place_id) {
+                        showResult(businessResult.place_id);
+                    } else {
+                        showError('Place ID not found in geocoding results. The business might need a specific address.');
+                    }
+                } else {
+                    showError(`Geocoding error: ${data.status}`);
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            }
+        }
+
+        async function useReverseGeocode(lat, lng) {
+            const apiKey = "AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0";
+            
+            try {
+                const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.results && data.results.length > 0) {
+                    const result = data.results[0];
+                    if (result.place_id) {
+                        showResult(result.place_id);
+                    } else {
+                        showError('Place ID not found in results.');
+                    }
+                } else {
+                    showError(`Error: ${data.status}`);
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            }
+        }
+
+        function showResult(placeId) {
+            document.getElementById('placeId').value = placeId;
+            document.getElementById('placeIdForEnv').textContent = placeId;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function copyToClipboard() {
+            const placeIdInput = document.getElementById('placeId');
+            placeIdInput.select();
+            document.execCommand('copy');
+            alert('Place ID copied to clipboard!');
+        }
+
+        // Auto-fill with the URL from the screenshot if available
+        window.onload = function() {
+            // You can paste the URL here if you want
+            // document.getElementById('mapsUrl').value = 'https://www.google.com/maps/place/Gladys+Schmanski+Spiritual+Recovery+Life+Coach/@46.423669,-129.9427085,3z/data=!4m6!3m5!1s0x4ebcf23697b85cef:0x3d6a3d8f849fd1d8!8m2!3d46.423669!4d-129.9427086!16s%2Fg%2F11q9rpqprz?hl=en&entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoKLDEwMDc5MjA2OUgBUAM%3D';
+        };
+    </script>
+</body>
+</html>

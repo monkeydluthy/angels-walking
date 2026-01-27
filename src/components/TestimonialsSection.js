@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote, ExternalLink } from 'lucide-react';
+import { fetchGoogleReviews, fetchBusinessRating } from '../lib/googleReviews';
 
 const TestimonialsSection = () => {
-  const testimonials = [
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [businessRating, setBusinessRating] = useState(null);
+  const [googlePlaceUrl, setGooglePlaceUrl] = useState(null);
+
+  // Placeholder testimonials as fallback
+  const placeholderTestimonials = [
     {
       name: 'Sarah M.',
       location: 'Orlando, FL',
@@ -54,6 +61,43 @@ const TestimonialsSection = () => {
     },
   ];
 
+  useEffect(() => {
+    const loadReviews = async () => {
+      try {
+        // Fetch Google Reviews (5-star only)
+        const googleReviews = await fetchGoogleReviews();
+        
+        // Fetch business rating info
+        const ratingInfo = await fetchBusinessRating();
+        
+        if (googleReviews && googleReviews.length > 0) {
+          setTestimonials(googleReviews);
+        } else {
+          // Fallback to placeholder testimonials if no Google reviews
+          setTestimonials(placeholderTestimonials);
+        }
+
+        if (ratingInfo) {
+          setBusinessRating(ratingInfo);
+        }
+
+        // Build Google Place URL for "Leave a Review" button
+        const placeId = process.env.REACT_APP_GOOGLE_PLACE_ID;
+        if (placeId) {
+          setGooglePlaceUrl(`https://search.google.com/local/writereview?placeid=${placeId}`);
+        }
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        // Fallback to placeholder testimonials on error
+        setTestimonials(placeholderTestimonials);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadReviews();
+  }, []);
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -83,49 +127,67 @@ const TestimonialsSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-xl p-6 shadow-lg card-hover"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-spiritual-gradient rounded-full flex items-center justify-center text-white font-semibold">
-                    {testimonial.avatar}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading reviews...</p>
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">
+            <p className="text-lg">No reviews available at this time.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={`${testimonial.name}-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-white rounded-xl p-6 shadow-lg card-hover"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-spiritual-gradient rounded-full flex items-center justify-center text-white font-semibold">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {testimonial.location}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {testimonial.location}
-                    </p>
-                  </div>
+                  <Quote className="w-6 h-6 text-primary-300" />
                 </div>
-                <Quote className="w-6 h-6 text-primary-300" />
-              </div>
 
-              <div className="flex items-center mb-4">
-                {renderStars(testimonial.rating)}
-                <span className="ml-2 text-sm text-gray-600">
-                  ({testimonial.rating}.0)
-                </span>
-              </div>
+                <div className="flex items-center mb-4">
+                  {renderStars(testimonial.rating)}
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({testimonial.rating}.0)
+                  </span>
+                  {testimonial.isGoogleReview && (
+                    <span className="ml-2 text-xs text-primary-600 font-medium bg-primary-50 px-2 py-1 rounded">
+                      Google Review
+                    </span>
+                  )}
+                </div>
 
-              <p className="text-gray-600 leading-relaxed mb-4">
-                "{testimonial.text}"
-              </p>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  "{testimonial.text}"
+                </p>
 
-              <div className="text-sm text-primary-600 font-medium">
-                {testimonial.service}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                {testimonial.service && (
+                  <div className="text-sm text-primary-600 font-medium">
+                    {testimonial.service}
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* Overall Rating */}
         <motion.div
@@ -136,19 +198,48 @@ const TestimonialsSection = () => {
         >
           <div className="bg-white rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              {renderStars(5)}
-              <span className="text-2xl font-bold text-gray-900 ml-2">5.0</span>
+              {renderStars(businessRating?.rating || 5)}
+              <span className="text-2xl font-bold text-gray-900 ml-2">
+                {businessRating?.rating?.toFixed(1) || '5.0'}
+              </span>
             </div>
             <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
               Average Client Rating
             </h3>
             <p className="text-gray-600 mb-6">
-              Based on 500+ client sessions and spiritual recovery coaching
-              experiences
+              {businessRating?.totalRatings
+                ? `Based on ${businessRating.totalRatings} Google Reviews`
+                : 'Based on client sessions and spiritual recovery coaching experiences'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary">Read All Reviews</button>
-              <button className="btn-outline">Leave a Review</button>
+              {googlePlaceUrl && (
+                <>
+                  <a
+                    href={googlePlaceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary inline-flex items-center justify-center"
+                  >
+                    Read All Reviews
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                  <a
+                    href={googlePlaceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-outline inline-flex items-center justify-center"
+                  >
+                    Leave a Review
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </>
+              )}
+              {!googlePlaceUrl && (
+                <>
+                  <button className="btn-primary">Read All Reviews</button>
+                  <button className="btn-outline">Leave a Review</button>
+                </>
+              )}
             </div>
           </div>
         </motion.div>

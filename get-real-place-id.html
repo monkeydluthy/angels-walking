@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Real Place ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #357ae8; }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4285f4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            display: block;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .place-id-box {
+            background: #f0f0f0;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 15px 0;
+            cursor: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Get Real Place ID</h1>
+        
+        <div class="warning">
+            <h3>⚠️ Important</h3>
+            <p><code>0x4ebcf23697b85cef:0x3d6a3d8f849fd1d8</code> is <strong>NOT</strong> the Place ID format.</p>
+            <p>This is an internal Google Maps identifier. We need to convert it to the actual Place ID that the Places API uses.</p>
+            <p><strong>Place IDs should look like:</strong> <code>ChIJN1t_tDeuEmsRUsoyG83frY4</code> (starts with ChIJ or EiJ, ~27 characters)</p>
+        </div>
+
+        <p><strong>Let's get the real Place ID using the Places API:</strong></p>
+        <button onclick="getPlaceIdFromBusinessName()">Get Place ID from Business Name</button>
+        <button onclick="getPlaceIdFromCoordinates()">Get Place ID from Coordinates</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Searching Google Places API...</p>
+        </div>
+
+        <div class="result" id="result">
+            <h3>✅ Real Place ID Found!</h3>
+            <p><strong>Business Name:</strong> <span id="businessName"></span></p>
+            <p><strong>Address:</strong> <span id="address"></span></p>
+            <p><strong>Place ID (Correct Format):</strong></p>
+            <input type="text" id="placeId" class="place-id-box" readonly onclick="this.select(); document.execCommand('copy'); alert('Copied!');">
+            <p><strong>Add this to your .env file:</strong></p>
+            <code>REACT_APP_GOOGLE_PLACE_ID=<span id="placeIdForEnv"></span></code>
+            <button onclick="copyToClipboard()">Copy Place ID</button>
+        </div>
+
+        <div class="result error" id="error" style="display: none;">
+            <h3>❌ Error</h3>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0";
+        const businessName = "Gladys Schmanski Spiritual Recovery Life Coach";
+
+        async function getPlaceIdFromBusinessName() {
+            showLoading();
+            hideResults();
+
+            try {
+                // Use Find Place API - more reliable for business names
+                const input = businessName;
+                const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(input)}&inputtype=textquery&fields=place_id,name,formatted_address&key=${apiKey}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.candidates && data.candidates.length > 0) {
+                    const business = data.candidates[0];
+                    showResult(business);
+                } else if (data.status === 'ZERO_RESULTS') {
+                    // Try Text Search as fallback
+                    tryTextSearch();
+                } else {
+                    showError(`API Error: ${data.status} - ${data.error_message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function tryTextSearch() {
+            try {
+                const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(businessName)}&key=${apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.results && data.results.length > 0) {
+                    const business = data.results.find(r => 
+                        r.name.toLowerCase().includes('gladys') || 
+                        r.name.toLowerCase().includes('schmanski')
+                    ) || data.results[0];
+                    
+                    showResult(business);
+                } else {
+                    showError(`No results found. Status: ${data.status}`);
+                }
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            }
+        }
+
+        async function getPlaceIdFromCoordinates() {
+            showLoading();
+            hideResults();
+
+            // Since Geocoding API might not be enabled, let's try a different approach
+            // Use Places API Text Search with location bias
+            try {
+                // Try searching with location context
+                const searchTerms = [
+                    "Gladys Schmanski Spiritual Recovery Life Coach Orlando",
+                    "Gladys Schmanski Spiritual Recovery Life Coach California",
+                    "Gladys Schmanski Life Coach"
+                ];
+
+                for (const searchTerm of searchTerms) {
+                    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchTerm)}&key=${apiKey}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (data.status === 'OK' && data.results && data.results.length > 0) {
+                        const business = data.results.find(r => 
+                            r.name.toLowerCase().includes('gladys') || 
+                            r.name.toLowerCase().includes('schmanski') ||
+                            r.name.toLowerCase().includes('spiritual recovery')
+                        ) || data.results[0];
+                        
+                        showResult(business);
+                        hideLoading();
+                        return;
+                    }
+                }
+
+                showError('Business not found. The business might need to be verified or indexed in Google Places. Try enabling Geocoding API or add a specific address to the Google Business Profile.');
+            } catch (error) {
+                showError(`Network error: ${error.message}. This might be a CORS issue. Try enabling Geocoding API in Google Cloud Console.`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function showResult(business) {
+            document.getElementById('businessName').textContent = business.name || 'N/A';
+            document.getElementById('address').textContent = business.formatted_address || 'N/A';
+            document.getElementById('placeId').value = business.place_id;
+            document.getElementById('placeIdForEnv').textContent = business.place_id;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function hideResults() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function copyToClipboard() {
+            const placeIdInput = document.getElementById('placeId');
+            placeIdInput.select();
+            document.execCommand('copy');
+            alert('Place ID copied to clipboard!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Key & Get Place ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #4285f4;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        input, button {
+            padding: 12px;
+            margin: 10px 5px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        input {
+            width: 400px;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover { background: #357ae8; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        .info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test API Key & Get Place ID</h1>
+
+        <div class="info">
+            <h3>💡 Easiest Method (No API Key Needed!)</h3>
+            <p>Use Google's official tool: <a href="https://developers.google.com/maps/documentation/places/web-service/place-id#find-id" target="_blank">Google Places ID Finder</a></p>
+            <ol>
+                <li>Click the link above</li>
+                <li>Search for: <strong>Gladys Schmanski Spiritual Recovery Life Coach</strong></li>
+                <li>Click on the business</li>
+                <li>Copy the Place ID shown</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Step 1: Test Your API Key</h2>
+            <p>Let's make sure your API key works and has Places API enabled:</p>
+            <input type="text" id="apiKey" placeholder="Enter your API key" value="AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0">
+            <button onclick="testApiKey()">Test API Key</button>
+            <div id="apiKeyResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Get Place ID</h2>
+            <p>Once your API key is working, get the Place ID:</p>
+            <input type="text" id="businessName" value="Gladys Schmanski Spiritual Recovery Life Coach" placeholder="Business name">
+            <button onclick="getPlaceId()">Get Place ID</button>
+            <div id="placeIdResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Add to .env File</h2>
+            <p>Once you have the Place ID, add it to your <code>.env</code> file:</p>
+            <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">
+REACT_APP_GOOGLE_PLACES_API_KEY=AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0
+REACT_APP_GOOGLE_PLACE_ID=ChIJ...your_place_id_here</pre>
+        </div>
+    </div>
+
+    <script>
+        async function testApiKey() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const resultDiv = document.getElementById('apiKeyResult');
+            
+            if (!apiKey) {
+                resultDiv.innerHTML = '<div class="error"><strong>Error:</strong> Please enter an API key</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>Testing API key...</p>';
+
+            try {
+                // Test with a simple Places API call
+                const testUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=test&key=${apiKey}`;
+                const response = await fetch(testUrl);
+                const data = await response.json();
+
+                if (data.status === 'OK' || data.status === 'ZERO_RESULTS') {
+                    resultDiv.innerHTML = '<div class="result"><strong>✅ API Key Works!</strong><br>Places API is enabled and working.</div>';
+                } else if (data.status === 'REQUEST_DENIED') {
+                    resultDiv.innerHTML = `<div class="error"><strong>❌ API Key Error:</strong><br>${data.error_message || 'Places API might not be enabled. Go to <a href="https://console.cloud.google.com/apis/library" target="_blank">Google Cloud Console</a> and enable Places API.'}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><strong>❌ Error:</strong> ${data.status} - ${data.error_message || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><strong>❌ Network Error:</strong><br>${error.message}<br><br>This might be a CORS issue. Try using the <a href="https://developers.google.com/maps/documentation/places/web-service/place-id#find-id" target="_blank">Google Places ID Finder</a> instead.</div>`;
+            }
+        }
+
+        async function getPlaceId() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const businessName = document.getElementById('businessName').value.trim();
+            const resultDiv = document.getElementById('placeIdResult');
+
+            if (!apiKey || !businessName) {
+                resultDiv.innerHTML = '<div class="error"><strong>Error:</strong> Please enter both API key and business name</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>Searching for business...</p>';
+
+            try {
+                const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(businessName)}&key=${apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.results && data.results.length > 0) {
+                    const business = data.results.find(r => 
+                        r.name.toLowerCase().includes('gladys') || 
+                        r.name.toLowerCase().includes('schmanski')
+                    ) || data.results[0];
+
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h3>✅ Place ID Found!</h3>
+                            <p><strong>Business:</strong> ${business.name}</p>
+                            <p><strong>Address:</strong> ${business.formatted_address || 'N/A'}</p>
+                            <p><strong>Place ID:</strong></p>
+                            <input type="text" value="${business.place_id}" readonly style="width: 100%; padding: 10px; font-size: 18px; font-weight: bold; background: #f0f0f0; border: 2px solid #4caf50;" onclick="this.select()">
+                            <p style="margin-top: 15px;"><strong>Add this to your .env file:</strong></p>
+                            <code>REACT_APP_GOOGLE_PLACE_ID=${business.place_id}</code>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><strong>❌ Error:</strong> ${data.status} - ${data.error_message || 'No results found'}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><strong>❌ Network Error:</strong><br>${error.message}<br><br><strong>Solution:</strong> Use the <a href="https://developers.google.com/maps/documentation/places/web-service/place-id#find-id" target="_blank">Google Places ID Finder</a> - it doesn't require an API key!</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

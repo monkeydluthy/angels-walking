@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Place ID from Google Maps Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .result {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📍 Extract Place ID from Google Maps Page</h1>
+        
+        <div class="instructions">
+            <h3>Since your business is verified, the Place ID is definitely on the Google Maps page!</h3>
+            <p>Follow these steps to extract it:</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Open Your Business on Google Maps</h3>
+            <p>Go to your business page on Google Maps:</p>
+            <ul>
+                <li>Click "See your profile" from Google Business Profile Manager, OR</li>
+                <li>Go to: <a href="https://www.google.com/maps/place/Gladys+Schmanski+Spiritual+Recovery+Life+Coach" target="_blank">https://www.google.com/maps/place/Gladys+Schmanski+Spiritual+Recovery+Life+Coach</a></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Open Browser Console</h3>
+            <p>Press <strong>F12</strong> (or right-click → "Inspect") to open Developer Tools</p>
+            <p>Go to the <strong>"Console"</strong> tab</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Run This Code</h3>
+            <p>Copy and paste this code into the console, then press Enter:</p>
+            <div class="code-block">
+// Extract Place ID from Google Maps page
+(function() {
+  console.log("🔍 Searching for Place ID...\n");
+  
+  let placeId = null;
+  
+  // Method 1: Search in script tags
+  const scripts = document.getElementsByTagName('script');
+  for (let script of scripts) {
+    const content = script.textContent || script.innerHTML;
+    // Look for place_id in various formats
+    const patterns = [
+      /place_id["\s:]+(ChIJ[^"'\s,}]+)/i,
+      /"place_id":"(ChIJ[^"]+)"/i,
+      /place_id=(ChIJ[^&\s]+)/i,
+      /ChIJ[\w-]{27}/i
+    ];
+    
+    for (const pattern of patterns) {
+      const match = content.match(pattern);
+      if (match) {
+        placeId = match[1] || match[0];
+        if (placeId.startsWith('ChIJ') || placeId.startsWith('EiJ')) {
+          console.log("✅ Found in scripts:", placeId);
+          break;
+        }
+      }
+    }
+    if (placeId) break;
+  }
+  
+  // Method 2: Check window.google.maps data
+  if (!placeId && window.google && window.google.maps) {
+    try {
+      // Try to access map data
+      const maps = window.google.maps;
+      console.log("Google Maps API loaded");
+    } catch (e) {
+      console.log("Could not access Google Maps data");
+    }
+  }
+  
+  // Method 3: Search page text
+  if (!placeId) {
+    const bodyText = document.body.innerText;
+    const match = bodyText.match(/ChIJ[\w-]{27}/);
+    if (match) {
+      placeId = match[0];
+      console.log("✅ Found in page text:", placeId);
+    }
+  }
+  
+  // Method 4: Check URL
+  if (!placeId) {
+    const url = window.location.href;
+    const urlMatch = url.match(/place_id=([^&]+)/);
+    if (urlMatch) {
+      placeId = decodeURIComponent(urlMatch[1]);
+      console.log("✅ Found in URL:", placeId);
+    }
+  }
+  
+  // Display result
+  if (placeId) {
+    console.log("\n" + "=".repeat(50));
+    console.log("✅ PLACE ID FOUND!");
+    console.log("=".repeat(50));
+    console.log("\n📍 Place ID:", placeId);
+    console.log("\n📝 Add this to your .env file:");
+    console.log(`REACT_APP_GOOGLE_PLACE_ID=${placeId}`);
+    console.log("\n" + "=".repeat(50));
+    
+    // Copy to clipboard if possible
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(placeId).then(() => {
+        console.log("\n✅ Place ID copied to clipboard!");
+      });
+    }
+  } else {
+    console.log("\n❌ Place ID not found automatically.");
+    console.log("\n💡 Try this:");
+    console.log("   1. Right-click on the page → 'View Page Source'");
+    console.log("   2. Press Ctrl+F (or Cmd+F) to search");
+    console.log("   3. Search for: ChIJ");
+    console.log("   4. Look for a 27-character string starting with ChIJ");
+  }
+})();
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Copy the Place ID</h3>
+            <p>The Place ID will be displayed in the console and automatically copied to your clipboard if possible.</p>
+            <p><strong>Format:</strong> Should start with <code>ChIJ</code> and be about 27 characters long</p>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ If the code doesn't find it:</h3>
+            <ol>
+                <li>Right-click on the Google Maps page → "View Page Source"</li>
+                <li>Press <strong>Ctrl+F</strong> (or <strong>Cmd+F</strong> on Mac)</li>
+                <li>Search for: <code>ChIJ</code></li>
+                <li>Look for a string that starts with <code>ChIJ</code> (about 27 characters)</li>
+            </ol>
+        </div>
+
+        <div class="result" id="result">
+            <h3>✅ Success!</h3>
+            <p>If you see the Place ID in the console, copy it and add it to your <code>.env</code> file.</p>
+        </div>
+    </div>
+</body>
+</html>

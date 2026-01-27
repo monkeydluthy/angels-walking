@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Place ID - Direct API Call</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #357ae8; }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4285f4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .place-id-box {
+            background: #f0f0f0;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 15px 0;
+            cursor: text;
+        }
+        .place-id-box:focus {
+            outline: none;
+            border-color: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Get Place ID - Direct API Method</h1>
+        
+        <div class="info">
+            <h3>Why This Works</h3>
+            <p>This tool uses your API key directly to search for the business and get the Place ID. It bypasses the Places ID Finder tool issues.</p>
+        </div>
+
+        <div>
+            <p><strong>API Key:</strong> <code id="apiKeyDisplay">AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0</code></p>
+            <p><strong>Business Name:</strong> Gladys Schmanski Spiritual Recovery Life Coach</p>
+        </div>
+
+        <button onclick="searchBusiness()">Search & Get Place ID</button>
+        <button onclick="tryAlternativeSearch()">Try Alternative Search</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Searching Google Places API...</p>
+        </div>
+
+        <div class="result" id="result">
+            <h3>✅ Place ID Found!</h3>
+            <p><strong>Business Name:</strong> <span id="businessName"></span></p>
+            <p><strong>Address:</strong> <span id="address"></span></p>
+            <p><strong>Place ID:</strong></p>
+            <input type="text" id="placeId" class="place-id-box" readonly onclick="this.select(); document.execCommand('copy'); alert('Copied!');">
+            <p><strong>Add this to your .env file:</strong></p>
+            <code>REACT_APP_GOOGLE_PLACE_ID=<span id="placeIdForEnv"></span></code>
+            <button onclick="copyToClipboard()">Copy Place ID</button>
+        </div>
+
+        <div class="result error" id="error" style="display: none;">
+            <h3>❌ Error</h3>
+            <p id="errorMessage"></p>
+            <div id="errorDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "AIzaSyAw_feFD6KfBjeTVdwG7BSU5xSlZdK6pb0";
+
+        async function searchBusiness() {
+            showLoading();
+            hideResults();
+
+            // Try multiple search variations
+            const searchTerms = [
+                "Gladys Schmanski Spiritual Recovery Life Coach",
+                "Gladys Schmanski",
+                "Spiritual Recovery Life Coach Orlando",
+                "Gladys Schmanski Orlando FL"
+            ];
+
+            for (const searchTerm of searchTerms) {
+                try {
+                    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchTerm)}&key=${apiKey}`;
+                    
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (data.status === 'OK' && data.results && data.results.length > 0) {
+                        // Find the most relevant result
+                        const business = data.results.find(r => 
+                            r.name.toLowerCase().includes('gladys') || 
+                            r.name.toLowerCase().includes('schmanski') ||
+                            r.name.toLowerCase().includes('spiritual recovery')
+                        ) || data.results[0];
+
+                        showResult(business);
+                        return;
+                    } else if (data.status === 'REQUEST_DENIED') {
+                        showError(`API Error: ${data.error_message || 'Request denied. Check your API key and Places API settings.'}`);
+                        return;
+                    }
+                } catch (error) {
+                    console.error(`Error searching with "${searchTerm}":`, error);
+                }
+            }
+
+            // If we get here, no results found
+            showError("No business found with any search term. The business might not be fully indexed in Google Places yet.");
+        }
+
+        async function tryAlternativeSearch() {
+            showLoading();
+            hideResults();
+
+            // Try using Find Place API with business name
+            try {
+                const input = "Gladys Schmanski Spiritual Recovery Life Coach";
+                const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(input)}&inputtype=textquery&fields=place_id,name,formatted_address&key=${apiKey}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'OK' && data.candidates && data.candidates.length > 0) {
+                    const business = data.candidates[0];
+                    showResult(business);
+                } else {
+                    showError(`Find Place API returned: ${data.status} - ${data.error_message || 'No results found'}`);
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            }
+        }
+
+        function showResult(business) {
+            hideLoading();
+            document.getElementById('businessName').textContent = business.name;
+            document.getElementById('address').textContent = business.formatted_address || 'Address not available';
+            document.getElementById('placeId').value = business.place_id;
+            document.getElementById('placeIdForEnv').textContent = business.place_id;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showError(message, details = '') {
+            hideLoading();
+            document.getElementById('errorMessage').textContent = message;
+            if (details) {
+                document.getElementById('errorDetails').innerHTML = details;
+            }
+            document.getElementById('error').style.display = 'block';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function hideResults() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function copyToClipboard() {
+            const placeIdInput = document.getElementById('placeId');
+            placeIdInput.select();
+            document.execCommand('copy');
+            alert('Place ID copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
