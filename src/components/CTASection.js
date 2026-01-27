@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Heart, Star, CheckCircle } from 'lucide-react';
+import { analytics } from '../lib/analytics';
 
 const CTASection = () => {
   const benefits = [
@@ -110,6 +111,7 @@ const CTASection = () => {
           >
             <Link
               to="/self-care-quiz"
+              onClick={() => analytics.trackCTAClick('Take Self-Care Quiz', 'cta_section')}
               className="bg-healing-500 text-gray-900 hover:bg-healing-400 font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center text-lg"
             >
               Take Self-Care Quiz
@@ -117,6 +119,7 @@ const CTASection = () => {
             </Link>
             <Link
               to="/contact"
+              onClick={() => analytics.trackCTAClick('Book Your Session', 'cta_section')}
               className="bg-transparent text-white hover:bg-white hover:text-gray-900 font-bold py-4 px-8 rounded-lg transition-all duration-300 border-2 border-white inline-flex items-center justify-center text-lg"
             >
               Book Your Session

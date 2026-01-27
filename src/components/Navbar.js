@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
+import { analytics } from '../lib/analytics';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -98,6 +99,7 @@ const Navbar = () => {
                 <div className="pt-4 border-t border-primary-200 mt-4 text-center pb-4">
                   <a
                     href="tel:407-782-5048"
+                    onClick={() => analytics.trackEvent('phone_call', { location: 'mobile_menu' })}
                     className="flex items-center justify-center space-x-3 px-6 py-3 text-primary-600 hover:text-primary-700 transition-all duration-300 rounded-xl mx-3 hover:bg-white/90 mb-3"
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-spiritual-600 rounded-full flex items-center justify-center shadow-lg">
@@ -171,12 +173,17 @@ const Navbar = () => {
             <div className="flex items-center space-x-4">
               <a
                 href="tel:407-782-5048"
+                onClick={() => analytics.trackEvent('phone_call', { location: 'desktop_navbar' })}
                 className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 transition-colors duration-200"
               >
                 <Phone className="w-4 h-4" />
                 <span className="font-medium">407-782-5048</span>
               </a>
-              <Link to="/contact" className="btn-primary">
+              <Link 
+                to="/contact" 
+                onClick={() => analytics.trackCTAClick('Book Session', 'navbar')}
+                className="btn-primary"
+              >
                 Book Session
               </Link>
             </div>

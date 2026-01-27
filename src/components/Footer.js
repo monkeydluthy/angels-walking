@@ -10,6 +10,7 @@ import {
   Youtube,
   Heart,
 } from 'lucide-react';
+import { analytics } from '../lib/analytics';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -104,6 +105,7 @@ const Footer = () => {
                   </p>
                   <a
                     href="mailto:gladys@angelswalking.com"
+                    onClick={() => analytics.trackEvent('email_click', { location: 'footer', email: 'gladys@angelswalking.com' })}
                     className="text-white hover:text-spiritual-300 transition-colors duration-200 font-bold text-lg"
                   >
                     gladys@angelswalking.com

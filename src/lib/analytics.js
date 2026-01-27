@@ -99,6 +99,21 @@ export const analytics = {
     });
   },
 
+  // Phone call tracking
+  trackPhoneCall: (location) => {
+    trackEvent('phone_call', {
+      location: location,
+    });
+  },
+
+  // Email click tracking
+  trackEmailClick: (location, email) => {
+    trackEvent('email_click', {
+      location: location,
+      email: email,
+    });
+  },
+
   // Review actions
   trackReviewClick: (action) => {
     trackEvent('review_action', {

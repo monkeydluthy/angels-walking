@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Heart, Star } from 'lucide-react';
+import { analytics } from '../lib/analytics';
 
 const HeroSection = () => {
   return (
@@ -45,6 +46,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8 w-full">
               <Link
                 to="/self-care-quiz"
+                onClick={() => analytics.trackCTAClick('Take Self-Care Quiz', 'hero_section')}
                 className="btn-primary inline-flex items-center justify-center w-full sm:w-auto"
               >
                 Take Self-Care Quiz
@@ -52,6 +54,7 @@ const HeroSection = () => {
               </Link>
               <Link
                 to="/contact"
+                onClick={() => analytics.trackCTAClick('Book Free Consultation', 'hero_section')}
                 className="btn-outline inline-flex items-center justify-center w-full sm:w-auto"
               >
                 Book Free Consultation

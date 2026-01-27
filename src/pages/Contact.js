@@ -167,6 +167,13 @@ const Contact = () => {
                       {info.link ? (
                         <a
                           href={info.link}
+                          onClick={() => {
+                            if (info.link?.startsWith('tel:')) {
+                              analytics.trackEvent('phone_call', { location: 'contact_page' });
+                            } else if (info.link?.startsWith('mailto:')) {
+                              analytics.trackEvent('email_click', { location: 'contact_page', email: info.link.replace('mailto:', '') });
+                            }
+                          }}
                           className="text-primary-600 hover:text-primary-700 font-medium transition-colors duration-200 text-base md:text-lg hover:underline text-center block"
                         >
                           {info.value}

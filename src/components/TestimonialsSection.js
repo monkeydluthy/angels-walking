@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Quote, ExternalLink } from 'lucide-react';
 import { fetchGoogleReviews, fetchBusinessRating } from '../lib/googleReviews';
+import { analytics } from '../lib/analytics';
 
 const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -246,6 +247,7 @@ const TestimonialsSection = () => {
                 <>
                   <a
                     href={googlePlaceUrl}
+                    onClick={() => analytics.trackReviewClick('read_all')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary inline-flex items-center justify-center"
@@ -255,6 +257,7 @@ const TestimonialsSection = () => {
                   </a>
                   <a
                     href={googlePlaceUrl}
+                    onClick={() => analytics.trackReviewClick('leave_review')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-outline inline-flex items-center justify-center"
