@@ -65,7 +65,11 @@ const TestimonialsSection = () => {
     const loadReviews = async () => {
       try {
         // Fetch Google Reviews (5-star only)
-        const googleReviews = await fetchGoogleReviews();
+        // onNewReviews callback will update state when new reviews are detected
+        const googleReviews = await fetchGoogleReviews(false, (newReviews) => {
+          // When new reviews are detected, update the testimonials
+          setTestimonials(newReviews);
+        });
         
         // Fetch business rating info
         const ratingInfo = await fetchBusinessRating();
@@ -96,6 +100,32 @@ const TestimonialsSection = () => {
     };
 
     loadReviews();
+
+    // Set up periodic refresh every hour
+    const refreshInterval = setInterval(() => {
+      // Refresh reviews in background
+      fetchGoogleReviews(false, (newReviews) => {
+        setTestimonials(newReviews);
+      }).catch(err => console.error('Periodic refresh error:', err));
+    }, 60 * 60 * 1000); // Every hour
+
+    // Also refresh when page becomes visible (user returns to tab)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Refresh reviews when user returns to the page
+        fetchGoogleReviews(false, (newReviews) => {
+          setTestimonials(newReviews);
+        }).catch(err => console.error('Visibility refresh error:', err));
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      clearInterval(refreshInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const renderStars = (rating) => {

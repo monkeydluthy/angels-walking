@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
+import { analytics } from '../lib/analytics';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,6 +88,9 @@ const Contact = () => {
       ]);
 
       if (error) throw error;
+
+      // Track form submission in Google Analytics
+      analytics.trackContactForm();
 
       toast.success(
         "Thank you! Your message has been sent. We'll get back to you within 24 hours."

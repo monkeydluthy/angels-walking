@@ -2,8 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { initGA } from './lib/analytics';
 import './index.css';
 import App from './App';
+
+// Initialize Google Analytics
+const measurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
+if (measurementId) {
+  initGA(measurementId);
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

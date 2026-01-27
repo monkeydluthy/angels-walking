@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
+import { analytics } from '../lib/analytics';
 
 const SelfCareQuiz = () => {
   const navigate = useNavigate();
@@ -226,6 +227,12 @@ const SelfCareQuiz = () => {
         console.error('Error submitting quiz:', submitError);
         // Continue anyway - don't block user from seeing results
       }
+
+      // Track quiz completion in Google Analytics
+      analytics.trackQuizComplete(
+        Object.keys(answers).length, // score (number of questions answered)
+        mockResults.primaryFocus // category
+      );
 
       setResults(mockResults);
       toast.success('Your personalized results are ready!');
