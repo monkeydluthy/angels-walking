@@ -4,14 +4,8 @@ import { Star, Quote, ExternalLink } from 'lucide-react';
 import { fetchGoogleReviews, fetchBusinessRating } from '../lib/googleReviews';
 import { analytics } from '../lib/analytics';
 
-const TestimonialsSection = () => {
-  const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [businessRating, setBusinessRating] = useState(null);
-  const [googlePlaceUrl, setGooglePlaceUrl] = useState(null);
-
-  // Placeholder testimonials as fallback
-  const placeholderTestimonials = [
+// Placeholder testimonials as fallback (moved outside component to avoid dependency warning)
+const placeholderTestimonials = [
     {
       name: 'Sarah M.',
       location: 'Orlando, FL',
@@ -60,7 +54,13 @@ const TestimonialsSection = () => {
       text: "Gladys helped me understand that I wasn't broken, just in need of healing. Her spiritual approach to addiction recovery has given me tools I use every day. I'm grateful for her guidance and support.",
       avatar: 'RW',
     },
-  ];
+];
+
+const TestimonialsSection = () => {
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [businessRating, setBusinessRating] = useState(null);
+  const [googlePlaceUrl, setGooglePlaceUrl] = useState(null);
 
   useEffect(() => {
     const loadReviews = async () => {

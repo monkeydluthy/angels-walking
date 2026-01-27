@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ExternalLink, 
   BarChart3, 
@@ -10,7 +10,6 @@ import {
   TrendingUp,
   Clock,
   Eye,
-  MessageSquare,
   BookOpen,
   Star
 } from 'lucide-react';
