@@ -70,6 +70,9 @@ exports.handler = async (event, context) => {
     const userEmail = quizData.contactInfo?.email || null;
     const userPhone = quizData.contactInfo?.phone || null;
 
+    const siteUrl = process.env.URL || 'https://angels-walking.netlify.app';
+    const logoUrl = `${siteUrl}/logo-transparent.png`;
+
     // Build email to Gladys
     const emailToGladys = {
       from: fromEmail,
@@ -81,218 +84,55 @@ exports.handler = async (event, context) => {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-              background-color: #f9fafb;
-            }
-            .container {
-              background-color: #ffffff;
-              border-radius: 12px;
-              padding: 30px;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .header {
-              text-align: center;
-              margin-bottom: 30px;
-              padding-bottom: 20px;
-              border-bottom: 2px solid #7C3AED;
-            }
-            h1 {
-              color: #7C3AED;
-              font-size: 24px;
-              margin: 0;
-            }
-            .info-section {
-              background-color: #f9fafb;
-              border-radius: 8px;
-              padding: 20px;
-              margin-bottom: 20px;
-            }
-            .info-row {
-              margin-bottom: 15px;
-              padding-bottom: 15px;
-              border-bottom: 1px solid #e5e7eb;
-            }
-            .info-row:last-child {
-              border-bottom: none;
-              margin-bottom: 0;
-              padding-bottom: 0;
-            }
-            .label {
-              font-weight: 600;
-              color: #6B7280;
-              font-size: 14px;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              margin-bottom: 5px;
-            }
-            .value {
-              color: #111827;
-              font-size: 16px;
-            }
-            .section {
-              margin-top: 30px;
-              padding-top: 20px;
-              border-top: 2px solid #A78BFA;
-            }
-            .section-title {
-              color: #7C3AED;
-              font-size: 20px;
-              font-weight: 600;
-              margin-bottom: 15px;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 10px;
-            }
-            table td {
-              padding: 12px;
-              border-bottom: 1px solid #e5e7eb;
-            }
-            table tr:last-child td {
-              border-bottom: none;
-            }
-            .recommendations {
-              background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
-              color: white;
-              padding: 20px;
-              border-radius: 8px;
-              margin-top: 20px;
-            }
-            .recommendations h3 {
-              margin-top: 0;
-              color: white;
-            }
-            .recommendations ul {
-              margin: 15px 0;
-              padding-left: 20px;
-            }
-            .recommendations li {
-              margin-bottom: 10px;
-            }
-            .footer {
-              text-align: center;
-              margin-top: 30px;
-              padding-top: 20px;
-              border-top: 1px solid #e5e7eb;
-              color: #6B7280;
-              font-size: 12px;
-            }
-            .timestamp {
-              color: #9CA3AF;
-              font-size: 14px;
-              margin-top: 10px;
-            }
-          </style>
+          <title>New Self-Care Quiz Completed</title>
         </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>New Self-Care Quiz Completed</h1>
-            </div>
-            
-            <div class="info-section">
-              <div class="info-row">
-                <div class="label">Name</div>
-                <div class="value">${userName}</div>
-              </div>
-              ${
-                userEmail
-                  ? `
-              <div class="info-row">
-                <div class="label">Email</div>
-                <div class="value">${userEmail}</div>
-              </div>
-              `
-                  : ''
-              }
-              ${
-                userPhone
-                  ? `
-              <div class="info-row">
-                <div class="label">Phone</div>
-                <div class="value">${userPhone}</div>
-              </div>
-              `
-                  : ''
-              }
-            </div>
-
-            <div class="section">
-              <div class="section-title">Quiz Answers</div>
-              ${formatQuizAnswers(quizData.answers, [])}
-            </div>
-
-            ${
-              quizData.results
-                ? `
-            <div class="section">
-              <div class="section-title">Primary Focus Area</div>
-              <div class="value" style="font-size: 18px; color: #7C3AED; font-weight: 600;">
-                ${quizData.results.primaryFocus}
-              </div>
-            </div>
-
-            <div class="recommendations">
-              <h3>Personalized Recommendations</h3>
-              <ul>
-                ${quizData.results.recommendations?.map((rec) => `<li>${rec}</li>`).join('') || ''}
-              </ul>
-            </div>
-
-            ${
-              quizData.results.serviceRecommendation
-                ? `
-            <div class="section">
-              <div class="section-title">Recommended Service</div>
-              <div class="value" style="font-size: 18px; color: #F59E0B; font-weight: 600;">
-                ${quizData.results.serviceRecommendation}
-              </div>
-            </div>
-            `
-                : ''
-            }
-
-            ${
-              quizData.results.nextSteps
-                ? `
-            <div class="section">
-              <div class="section-title">Next Steps</div>
-              <ul style="margin: 15px 0; padding-left: 20px;">
-                ${quizData.results.nextSteps.map((step) => `<li style="margin-bottom: 10px;">${step}</li>`).join('')}
-              </ul>
-            </div>
-            `
-                : ''
-            }
-            `
-                : ''
-            }
-
-            <div class="timestamp">
-              Completed: ${new Date().toLocaleString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZoneName: 'short',
-              })}
-            </div>
-
-            <div class="footer">
-              <p>This email was sent from the Angels Walking self-care quiz.</p>
-              <p>Submission ID: ${submissionId}</p>
-            </div>
-          </div>
+        <body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f3ff; line-height: 1.6;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f3ff; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(124, 58, 237, 0.1);">
+                  <tr>
+                    <td style="padding: 32px 40px 24px; text-align: center; background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">
+                      <img src="${logoUrl}" alt="Angels Walking" width="180" style="display: block; margin: 0 auto 16px; max-height: 80px; width: auto;" />
+                      <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 700;">New Self-Care Quiz Completed</h1>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 32px 40px;">
+                      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #faf5ff; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                        <tr><td style="padding: 12px 0; border-bottom: 1px solid #e9d5ff;"><span style="font-size: 11px; font-weight: 600; color: #7C3AED; letter-spacing: 0.5px;">NAME</span><br/><span style="font-size: 16px; color: #1f2937;">${userName}</span></td></tr>
+                        ${userEmail ? `<tr><td style="padding: 12px 0; border-bottom: 1px solid #e9d5ff;"><span style="font-size: 11px; font-weight: 600; color: #7C3AED; letter-spacing: 0.5px;">EMAIL</span><br/><a href="mailto:${userEmail}" style="font-size: 16px; color: #2563eb; text-decoration: none;">${userEmail}</a></td></tr>` : ''}
+                        ${userPhone ? `<tr><td style="padding: 12px 0;"><span style="font-size: 11px; font-weight: 600; color: #7C3AED; letter-spacing: 0.5px;">PHONE</span><br/><span style="font-size: 16px; color: #1f2937;">${userPhone}</span></td></tr>` : ''}
+                      </table>
+                      <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #7C3AED;">Quiz answers</p>
+                      <div style="background-color: #f9fafb; border-radius: 8px; overflow: hidden; margin-bottom: 24px;">${formatQuizAnswers(quizData.answers, [])}</div>
+                      ${
+                        quizData.results
+                          ? `
+                      <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #7C3AED;">Primary focus</p>
+                      <p style="margin: 0 0 24px; font-size: 18px; color: #7C3AED; font-weight: 600;">${quizData.results.primaryFocus}</p>
+                      <div style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); color: #ffffff; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                        <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600;">Personalized recommendations</p>
+                        <ul style="margin: 0; padding-left: 20px;">${(quizData.results.recommendations || []).map((rec) => `<li style="margin-bottom: 8px;">${rec}</li>`).join('')}</ul>
+                      </div>
+                      ${quizData.results.serviceRecommendation ? `<p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #7C3AED;">Recommended service</p><p style="margin: 0 0 24px; font-size: 18px; color: #F59E0B; font-weight: 600;">${quizData.results.serviceRecommendation}</p>` : ''}
+                      ${quizData.results.nextSteps && quizData.results.nextSteps.length ? `<p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #7C3AED;">Next steps</p><ul style="margin: 0 0 24px; padding-left: 20px;">${quizData.results.nextSteps.map((step) => `<li style="margin-bottom: 8px; color: #374151;">${step}</li>`).join('')}</ul>` : ''}
+                      `
+                          : ''
+                      }
+                      <p style="font-size: 13px; color: #9ca3af;">Completed: ${new Date().toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 24px 40px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #6b7280;">
+                      <p style="margin: 0;">Sent from Angels Walking self-care quiz</p>
+                      <p style="margin: 4px 0 0;">ID: ${submissionId}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </body>
         </html>
       `,
