@@ -15,9 +15,13 @@ exports.handler = async (event, context) => {
     const { formData, submissionId } = JSON.parse(event.body);
 
     // Get email addresses from environment
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@angelswalking.com';
+    // Use Resend's default domain when RESEND_FROM_EMAIL is empty (allows testing without DNS setup)
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     // Use test email if provided, otherwise use Gladys email
-    const gladysEmail = process.env.TEST_EMAIL || process.env.GLADYS_EMAIL || 'gladys@angelswalking.com';
+    const gladysEmail =
+      process.env.TEST_EMAIL ||
+      process.env.GLADYS_EMAIL ||
+      'gladys@angelswalking.com';
 
     // Build email to Gladys
     const emailToGladys = {
@@ -131,30 +135,38 @@ exports.handler = async (event, context) => {
                 <div class="label">Phone</div>
                 <div class="value">${formData.phone || 'Not provided'}</div>
               </div>
-              ${formData.service ? `
+              ${
+                formData.service
+                  ? `
               <div class="info-row">
                 <div class="label">Service Interest</div>
                 <div class="value">${formData.service}</div>
               </div>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
 
-            ${formData.message ? `
+            ${
+              formData.message
+                ? `
             <div class="message-box">
               <div class="label">Message</div>
               <div class="value" style="white-space: pre-wrap; margin-top: 10px;">${formData.message}</div>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
 
             <div class="timestamp">
-              Submitted: ${new Date().toLocaleString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+              Submitted: ${new Date().toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                timeZoneName: 'short'
+                timeZoneName: 'short',
               })}
             </div>
 
@@ -256,12 +268,16 @@ exports.handler = async (event, context) => {
               <p>Thank you for reaching out to Angels Walking. We've received your message and will get back to you within 24 hours.</p>
             </div>
 
-            ${formData.message ? `
+            ${
+              formData.message
+                ? `
             <div class="message-copy">
               <strong>Your Message:</strong>
               <p style="white-space: pre-wrap; margin-top: 10px;">${formData.message}</p>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
 
             <div class="contact-info">
               <h3 style="color: #7C3AED; margin-top: 0;">Our Contact Information</h3>
@@ -289,11 +305,13 @@ exports.handler = async (event, context) => {
     // Send both emails
     const [gladysResult, userResult] = await Promise.all([
       resend.emails.send(emailToGladys),
-      formData.email ? resend.emails.send(emailToUser).catch(err => {
-        // Don't fail if user email fails
-        console.error('User confirmation email failed:', err);
-        return { error: err.message };
-      }) : Promise.resolve({ success: true, skipped: 'No email provided' }),
+      formData.email
+        ? resend.emails.send(emailToUser).catch((err) => {
+            // Don't fail if user email fails
+            console.error('User confirmation email failed:', err);
+            return { error: err.message };
+          })
+        : Promise.resolve({ success: true, skipped: 'No email provided' }),
     ]);
 
     return {

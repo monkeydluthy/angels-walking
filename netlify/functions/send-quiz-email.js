@@ -8,7 +8,8 @@ function formatQuizAnswers(answers, questions) {
     self_care_level: 'How would you describe your current level of self-care?',
     stress_level: 'How would you rate your current stress level?',
     spiritual_connection: 'How connected do you feel to your spiritual self?',
-    life_satisfaction: 'How satisfied are you with your current life situation?',
+    life_satisfaction:
+      'How satisfied are you with your current life situation?',
     support_system: 'How strong is your support system?',
     goals_clarity: 'How clear are you about your life goals and purpose?',
     negative_thoughts: 'How often do negative thoughts affect your daily life?',
@@ -17,19 +18,20 @@ function formatQuizAnswers(answers, questions) {
     preferred_approach: 'What approach resonates most with you?',
   };
 
-  let html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
-  
+  let html =
+    '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+
   Object.keys(answers).forEach((key) => {
     const question = questionLabels[key] || key;
     let answer = answers[key];
-    
+
     // Handle array answers (multiple choice)
     if (Array.isArray(answer)) {
       answer = answer.join(', ');
     }
-    
+
     // Format answer labels
-    answer = answer.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    answer = answer.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
     html += `
       <tr style="border-bottom: 1px solid #e5e7eb;">
@@ -38,7 +40,7 @@ function formatQuizAnswers(answers, questions) {
       </tr>
     `;
   });
-  
+
   html += '</table>';
   return html;
 }
@@ -56,9 +58,13 @@ exports.handler = async (event, context) => {
     const { quizData, submissionId } = JSON.parse(event.body);
 
     // Get email addresses from environment
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@angelswalking.com';
+    // Use Resend's default domain when RESEND_FROM_EMAIL is empty (allows testing without DNS setup)
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     // Use test email if provided, otherwise use Gladys email
-    const gladysEmail = process.env.TEST_EMAIL || process.env.GLADYS_EMAIL || 'gladys@angelswalking.com';
+    const gladysEmail =
+      process.env.TEST_EMAIL ||
+      process.env.GLADYS_EMAIL ||
+      'gladys@angelswalking.com';
 
     const userName = quizData.contactInfo?.name || 'Unknown';
     const userEmail = quizData.contactInfo?.email || null;
@@ -197,18 +203,26 @@ exports.handler = async (event, context) => {
                 <div class="label">Name</div>
                 <div class="value">${userName}</div>
               </div>
-              ${userEmail ? `
+              ${
+                userEmail
+                  ? `
               <div class="info-row">
                 <div class="label">Email</div>
                 <div class="value">${userEmail}</div>
               </div>
-              ` : ''}
-              ${userPhone ? `
+              `
+                  : ''
+              }
+              ${
+                userPhone
+                  ? `
               <div class="info-row">
                 <div class="label">Phone</div>
                 <div class="value">${userPhone}</div>
               </div>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
 
             <div class="section">
@@ -216,7 +230,9 @@ exports.handler = async (event, context) => {
               ${formatQuizAnswers(quizData.answers, [])}
             </div>
 
-            ${quizData.results ? `
+            ${
+              quizData.results
+                ? `
             <div class="section">
               <div class="section-title">Primary Focus Area</div>
               <div class="value" style="font-size: 18px; color: #7C3AED; font-weight: 600;">
@@ -227,38 +243,48 @@ exports.handler = async (event, context) => {
             <div class="recommendations">
               <h3>Personalized Recommendations</h3>
               <ul>
-                ${quizData.results.recommendations?.map(rec => `<li>${rec}</li>`).join('') || ''}
+                ${quizData.results.recommendations?.map((rec) => `<li>${rec}</li>`).join('') || ''}
               </ul>
             </div>
 
-            ${quizData.results.serviceRecommendation ? `
+            ${
+              quizData.results.serviceRecommendation
+                ? `
             <div class="section">
               <div class="section-title">Recommended Service</div>
               <div class="value" style="font-size: 18px; color: #F59E0B; font-weight: 600;">
                 ${quizData.results.serviceRecommendation}
               </div>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
 
-            ${quizData.results.nextSteps ? `
+            ${
+              quizData.results.nextSteps
+                ? `
             <div class="section">
               <div class="section-title">Next Steps</div>
               <ul style="margin: 15px 0; padding-left: 20px;">
-                ${quizData.results.nextSteps.map(step => `<li style="margin-bottom: 10px;">${step}</li>`).join('')}
+                ${quizData.results.nextSteps.map((step) => `<li style="margin-bottom: 10px;">${step}</li>`).join('')}
               </ul>
             </div>
-            ` : ''}
-            ` : ''}
+            `
+                : ''
+            }
+            `
+                : ''
+            }
 
             <div class="timestamp">
-              Completed: ${new Date().toLocaleString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+              Completed: ${new Date().toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                timeZoneName: 'short'
+                timeZoneName: 'short',
               })}
             </div>
 
