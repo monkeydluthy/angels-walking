@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { analytics } from '../lib/analytics';
+import { sendContactEmail } from '../lib/email';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,25 +81,67 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('form_submissions').insert([
-        {
-          form_type: 'contact',
-          data: data,
-        },
-      ]);
+      // Save to Supabase first
+      const { data: submissionData, error: submitError } = await supabase
+        .from('form_submissions')
+        .insert([
+          {
+            form_type: 'contact',
+            data: data,
+            email_sent: false, // Will update after email is sent
+          },
+        ])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (submitError) throw submitError;
+
+      const submissionId = submissionData.id;
 
       // Track form submission in Google Analytics
       analytics.trackContactForm();
 
-      toast.success(
-        "Thank you! Your message has been sent. We'll get back to you within 24 hours."
-      );
-      reset();
+      // Try to send email
+      try {
+        const emailResult = await sendContactEmail(data, submissionId);
+
+        if (emailResult.success) {
+          // Update submission to mark email as sent
+          await supabase
+            .from('form_submissions')
+            .update({ email_sent: true })
+            .eq('id', submissionId);
+
+          toast.success(
+            "Thank you! Your message has been sent. We'll get back to you within 24 hours."
+          );
+          reset();
+        } else {
+          // Email failed - show error with instructions
+          throw new Error('EMAIL_FAILED');
+        }
+      } catch (emailError) {
+        // Email sending failed
+        if (emailError.message === 'EMAIL_FAILED') {
+          // Show error with instructions to email directly
+          toast.error(
+            <div>
+              <p className="font-semibold mb-2">We're having trouble sending your message automatically.</p>
+              <p className="text-sm mb-2">Please email us directly at:</p>
+              <p className="text-sm font-mono bg-gray-100 p-2 rounded">gladys@angelswalking.com</p>
+              <p className="text-xs mt-2 text-gray-600">Your message: "{data.message}"</p>
+            </div>,
+            { duration: 10000 }
+          );
+        } else {
+          throw emailError;
+        }
+      }
     } catch (error) {
       console.error('Form submission error:', error);
-      toast.error('Error sending message. Please try again.');
+      if (error.message !== 'EMAIL_FAILED') {
+        toast.error('Error sending message. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }

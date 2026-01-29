@@ -12,13 +12,16 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { analytics } from '../lib/analytics';
+import { sendQuizEmail } from '../lib/email';
 
 const SelfCareQuiz = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [contactInfo, setContactInfo] = useState({ name: '', email: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [showContactForm, setShowContactForm] = useState(false);
 
   const questions = [
     {
@@ -189,6 +192,9 @@ const SelfCareQuiz = () => {
   const nextStep = () => {
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
+    } else {
+      // Show contact form before generating results
+      setShowContactForm(true);
     }
   };
 
@@ -198,9 +204,20 @@ const SelfCareQuiz = () => {
     }
   };
 
-  const generateResults = async () => {
-    setIsLoading(true);
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate required fields
+    if (!contactInfo.email || !contactInfo.phone) {
+      toast.error('Please provide both email and phone number');
+      return;
+    }
 
+    setIsLoading(true);
+    await generateResults();
+  };
+
+  const generateResults = async () => {
     try {
       // Generate results
       const mockResults = {
@@ -210,22 +227,50 @@ const SelfCareQuiz = () => {
         nextSteps: getNextSteps(),
       };
 
+      // Prepare quiz data with contact info
+      const quizData = {
+        answers,
+        results: mockResults,
+        contactInfo,
+      };
+
       // Submit quiz data to Supabase
-      const { error: submitError } = await supabase
+      const { data: submissionData, error: submitError } = await supabase
         .from('form_submissions')
         .insert([
           {
             form_type: 'self_care_quiz',
-            data: {
-              answers: answers,
-              results: mockResults,
-            },
+            data: quizData,
+            email_sent: false, // Will update after email is sent
           },
-        ]);
+        ])
+        .select()
+        .single();
 
       if (submitError) {
         console.error('Error submitting quiz:', submitError);
-        // Continue anyway - don't block user from seeing results
+        throw submitError;
+      }
+
+      const submissionId = submissionData.id;
+
+      // Send email to Gladys
+      try {
+        const emailResult = await sendQuizEmail(quizData, submissionId);
+        
+        if (emailResult.success) {
+          // Update submission to mark email as sent
+          await supabase
+            .from('form_submissions')
+            .update({ email_sent: true })
+            .eq('id', submissionId);
+        } else {
+          // Email failed but don't block user
+          console.error('Email sending failed:', emailResult.error);
+        }
+      } catch (emailError) {
+        console.error('Error sending email:', emailError);
+        // Don't block user from seeing results if email fails
       }
 
       // Track quiz completion in Google Analytics
@@ -235,6 +280,7 @@ const SelfCareQuiz = () => {
       );
 
       setResults(mockResults);
+      setShowContactForm(false);
       toast.success('Your personalized results are ready!');
     } catch (error) {
       console.error('Error generating results:', error);
@@ -323,7 +369,117 @@ const SelfCareQuiz = () => {
   };
 
   const currentQuestion = questions[currentStep];
-  const progress = ((currentStep + 1) / questions.length) * 100;
+  const progress = showContactForm 
+    ? 100 
+    : ((currentStep + 1) / questions.length) * 100;
+
+  // Show contact form before results
+  if (showContactForm && !results) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+        <div className="container-custom py-16">
+          <div className="max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
+              <div className="w-20 h-20 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
+                Almost <span className="text-gradient">There!</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-6">
+                Please provide your contact information to receive your personalized results
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl p-8 shadow-lg"
+            >
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={contactInfo.name}
+                    onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Your name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={contactInfo.email}
+                    onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Phone <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={contactInfo.phone}
+                    onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="(407) 555-1234"
+                  />
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowContactForm(false)}
+                    className="flex-1 btn-outline"
+                  >
+                    <ArrowLeft className="w-5 h-5 inline mr-2" />
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading || !contactInfo.name || !contactInfo.email || !contactInfo.phone}
+                    className={`flex-1 btn-primary ${isLoading || !contactInfo.name || !contactInfo.email || !contactInfo.phone ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2" />
+                        Generating Results...
+                      </>
+                    ) : (
+                      <>
+                        Get My Results
+                        <ArrowRight className="w-5 h-5 inline ml-2" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (results) {
     return (
@@ -574,7 +730,7 @@ const SelfCareQuiz = () => {
 
             {currentStep === questions.length - 1 ? (
               <button
-                onClick={generateResults}
+                onClick={nextStep}
                 disabled={
                   isLoading || Object.keys(answers).length < questions.length
                 }
@@ -584,17 +740,8 @@ const SelfCareQuiz = () => {
                     : 'btn-primary'
                 }`}
               >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Generating Results...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Get My Results</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
+                <span>Continue</span>
+                <ArrowRight className="w-5 h-5" />
               </button>
             ) : (
               <button

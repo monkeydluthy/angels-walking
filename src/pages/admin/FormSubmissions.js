@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Check, X, Eye, Filter } from 'lucide-react';
+import { Check, X, Eye, Filter, Mail, MailCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const FormSubmissions = () => {
@@ -112,6 +112,9 @@ const FormSubmissions = () => {
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
                 Actions
               </th>
             </tr>
@@ -141,10 +144,19 @@ const FormSubmissions = () => {
                     {submission.data?.email && (
                       <div className="text-gray-600">{submission.data.email}</div>
                     )}
+                    {submission.data?.contactInfo?.email && (
+                      <div className="text-gray-600">{submission.data.contactInfo.email}</div>
+                    )}
+                    {submission.data?.contactInfo?.phone && (
+                      <div className="text-gray-600">{submission.data.contactInfo.phone}</div>
+                    )}
                     {submission.data?.service && (
                       <div className="text-gray-600">
                         Service: {submission.data.service}
                       </div>
+                    )}
+                    {submission.data?.name && (
+                      <div className="text-gray-600">{submission.data.name}</div>
                     )}
                   </div>
                 </td>
@@ -155,6 +167,19 @@ const FormSubmissions = () => {
                     <span className="text-blue-600 text-sm font-semibold">
                       Unread
                     </span>
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  {submission.email_sent ? (
+                    <div className="flex items-center space-x-1 text-green-600" title="Email sent successfully">
+                      <MailCheck className="w-4 h-4" />
+                      <span className="text-sm">Sent</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-1 text-red-600" title="Email not sent">
+                      <Mail className="w-4 h-4" />
+                      <span className="text-sm">Failed</span>
+                    </div>
                   )}
                 </td>
                 <td className="px-6 py-4">
