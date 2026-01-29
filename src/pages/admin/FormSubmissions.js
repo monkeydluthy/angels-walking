@@ -56,14 +56,208 @@ const FormSubmissions = () => {
     return new Date(dateString).toLocaleString();
   };
 
-  const renderSubmissionData = (data) => {
+  // Human-readable labels for quiz questions
+  const quizQuestionLabels = {
+    self_care_level: 'Current level of self-care',
+    stress_level: 'Stress level',
+    spiritual_connection: 'Spiritual connection',
+    life_satisfaction: 'Life satisfaction',
+    support_system: 'Support system',
+    goals_clarity: 'Clarity on life goals',
+    negative_thoughts: 'Impact of negative thoughts',
+    self_esteem: 'Self-esteem',
+    healing_areas: 'Areas needing healing',
+    preferred_approach: 'Preferred spiritual guidance',
+  };
+
+  const formatQuizAnswer = (value) => {
+    if (Array.isArray(value)) return value.join(', ');
+    return String(value)
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+  };
+
+  const renderSubmissionData = (data, formType) => {
     if (!data) return null;
 
+    // Contact form: clean layout
+    if (formType === 'contact') {
+      const name =
+        [data.firstName, data.lastName].filter(Boolean).join(' ') || data.name;
+      return (
+        <div className="space-y-4">
+          {name && (
+            <div>
+              <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">
+                Name
+              </p>
+              <p className="text-gray-900">{name}</p>
+            </div>
+          )}
+          {data.email && (
+            <div>
+              <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">
+                Email
+              </p>
+              <p className="text-gray-900">{data.email}</p>
+            </div>
+          )}
+          {data.phone && (
+            <div>
+              <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">
+                Phone
+              </p>
+              <p className="text-gray-900">{data.phone}</p>
+            </div>
+          )}
+          {data.service && (
+            <div>
+              <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">
+                Service interest
+              </p>
+              <p className="text-gray-900">{data.service}</p>
+            </div>
+          )}
+          {data.message && (
+            <div>
+              <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">
+                Message
+              </p>
+              <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-3 rounded-lg">
+                {data.message}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Self-care quiz: structured sections
+    if (formType === 'self_care_quiz') {
+      return (
+        <div className="space-y-6">
+          {/* Contact info */}
+          {data.contactInfo &&
+            (data.contactInfo.name ||
+              data.contactInfo.email ||
+              data.contactInfo.phone) && (
+              <div>
+                <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wide mb-3">
+                  Contact information
+                </h4>
+                <div className="bg-primary-50 rounded-lg p-4 space-y-2">
+                  {data.contactInfo.name && (
+                    <p>
+                      <span className="text-gray-600">Name:</span>{' '}
+                      {data.contactInfo.name}
+                    </p>
+                  )}
+                  {data.contactInfo.email && (
+                    <p>
+                      <span className="text-gray-600">Email:</span>{' '}
+                      {data.contactInfo.email}
+                    </p>
+                  )}
+                  {data.contactInfo.phone && (
+                    <p>
+                      <span className="text-gray-600">Phone:</span>{' '}
+                      {data.contactInfo.phone}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+          {/* Quiz answers */}
+          {data.answers && Object.keys(data.answers).length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wide mb-3">
+                Quiz answers
+              </h4>
+              <div className="bg-gray-50 rounded-lg overflow-hidden">
+                <table className="w-full text-sm">
+                  <tbody>
+                    {Object.entries(data.answers).map(([key, value]) => (
+                      <tr
+                        key={key}
+                        className="border-b border-gray-200 last:border-0"
+                      >
+                        <td className="py-2 px-3 text-gray-600 font-medium align-top w-1/2">
+                          {quizQuestionLabels[key] || key.replace(/_/g, ' ')}
+                        </td>
+                        <td className="py-2 px-3 text-gray-900 align-top">
+                          {formatQuizAnswer(value)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Results */}
+          {data.results && (
+            <div>
+              <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wide mb-3">
+                Results & recommendations
+              </h4>
+              <div className="space-y-4">
+                {data.results.primaryFocus && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Primary focus</p>
+                    <p className="text-primary-700 font-semibold">
+                      {data.results.primaryFocus}
+                    </p>
+                  </div>
+                )}
+                {data.results.serviceRecommendation && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">
+                      Recommended service
+                    </p>
+                    <p className="text-gray-900 font-medium">
+                      {data.results.serviceRecommendation}
+                    </p>
+                  </div>
+                )}
+                {data.results.recommendations &&
+                  data.results.recommendations.length > 0 && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Personalized recommendations
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700">
+                        {data.results.recommendations.map((rec, i) => (
+                          <li key={i}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                {data.results.nextSteps &&
+                  data.results.nextSteps.length > 0 && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-2">Next steps</p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700">
+                        {data.results.nextSteps.map((step, i) => (
+                          <li key={i}>{step}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Fallback for other types (consultation, etc.)
     return Object.entries(data).map(([key, value]) => (
       <div key={key} className="mb-3">
         <span className="font-semibold text-gray-700 capitalize">
-          {key.replace(/_/g, ' ')}:
-        </span>{' '}
+          {key.replace(/_/g, ' ')}:{' '}
+        </span>
         <span className="text-gray-600">
           {typeof value === 'object' ? JSON.stringify(value) : String(value)}
         </span>
@@ -142,13 +336,19 @@ const FormSubmissions = () => {
                       </div>
                     )}
                     {submission.data?.email && (
-                      <div className="text-gray-600">{submission.data.email}</div>
+                      <div className="text-gray-600">
+                        {submission.data.email}
+                      </div>
                     )}
                     {submission.data?.contactInfo?.email && (
-                      <div className="text-gray-600">{submission.data.contactInfo.email}</div>
+                      <div className="text-gray-600">
+                        {submission.data.contactInfo.email}
+                      </div>
                     )}
                     {submission.data?.contactInfo?.phone && (
-                      <div className="text-gray-600">{submission.data.contactInfo.phone}</div>
+                      <div className="text-gray-600">
+                        {submission.data.contactInfo.phone}
+                      </div>
                     )}
                     {submission.data?.service && (
                       <div className="text-gray-600">
@@ -156,7 +356,9 @@ const FormSubmissions = () => {
                       </div>
                     )}
                     {submission.data?.name && (
-                      <div className="text-gray-600">{submission.data.name}</div>
+                      <div className="text-gray-600">
+                        {submission.data.name}
+                      </div>
                     )}
                   </div>
                 </td>
@@ -171,12 +373,18 @@ const FormSubmissions = () => {
                 </td>
                 <td className="px-6 py-4">
                   {submission.email_sent ? (
-                    <div className="flex items-center space-x-1 text-green-600" title="Email sent successfully">
+                    <div
+                      className="flex items-center space-x-1 text-green-600"
+                      title="Email sent successfully"
+                    >
                       <MailCheck className="w-4 h-4" />
                       <span className="text-sm">Sent</span>
                     </div>
                   ) : (
-                    <div className="flex items-center space-x-1 text-red-600" title="Email not sent">
+                    <div
+                      className="flex items-center space-x-1 text-red-600"
+                      title="Email not sent"
+                    >
                       <Mail className="w-4 h-4" />
                       <span className="text-sm">Failed</span>
                     </div>
@@ -194,7 +402,9 @@ const FormSubmissions = () => {
                     <button
                       onClick={() => markAsRead(submission.id, submission.read)}
                       className="p-2 hover:bg-gray-100 rounded"
-                      title={submission.read ? 'Mark as Unread' : 'Mark as Read'}
+                      title={
+                        submission.read ? 'Mark as Unread' : 'Mark as Read'
+                      }
                     >
                       {submission.read ? (
                         <X className="w-4 h-4 text-gray-600" />
@@ -255,24 +465,24 @@ const FormSubmissions = () => {
                 </span>
               </div>
               <div className="border-t pt-4">
-                <h3 className="font-semibold mb-3">Submission Data:</h3>
+                <h3 className="font-semibold mb-3 text-gray-900">
+                  Submission details
+                </h3>
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  {renderSubmissionData(selectedSubmission.data)}
+                  {renderSubmissionData(
+                    selectedSubmission.data,
+                    selectedSubmission.form_type,
+                  )}
                 </div>
               </div>
               <div className="mt-6 flex space-x-4">
                 <button
                   onClick={() =>
-                    markAsRead(
-                      selectedSubmission.id,
-                      selectedSubmission.read
-                    )
+                    markAsRead(selectedSubmission.id, selectedSubmission.read)
                   }
                   className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                 >
-                  {selectedSubmission.read
-                    ? 'Mark as Unread'
-                    : 'Mark as Read'}
+                  {selectedSubmission.read ? 'Mark as Unread' : 'Mark as Read'}
                 </button>
                 <button
                   onClick={() => setSelectedSubmission(null)}

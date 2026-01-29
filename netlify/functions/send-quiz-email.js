@@ -138,14 +138,114 @@ exports.handler = async (event, context) => {
       `,
     };
 
+    // Build confirmation email to quiz-taker (if they provided email)
+    const emailToUser = userEmail
+      ? {
+          from: fromEmail,
+          to: userEmail,
+          subject: 'Your Self-Care Quiz Results - Angels Walking',
+          html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Your Self-Care Quiz Results</title>
+        </head>
+        <body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f3ff; line-height: 1.6;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f3ff; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(124, 58, 237, 0.1);">
+                  <tr>
+                    <td style="padding: 32px 40px 24px; text-align: center; background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">
+                      <img src="${logoUrl}" alt="Angels Walking" width="180" style="display: block; margin: 0 auto 16px; max-height: 80px; width: auto;" />
+                      <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 700;">Your Quiz Results Are Here</h1>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 32px 40px;">
+                      <p style="margin: 0 0 24px; font-size: 16px; color: #374151;">Hi ${userName},</p>
+                      <p style="margin: 0 0 24px; font-size: 16px; color: #374151;">Thank you for completing the Angels Walking self-care assessment. Here’s a summary of your personalized results.</p>
+                      ${
+                        quizData.results?.primaryFocus
+                          ? `
+                      <div style="margin-bottom: 24px;">
+                        <p style="margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.5px;">Primary focus</p>
+                        <p style="margin: 0; font-size: 18px; color: #7C3AED; font-weight: 600;">${quizData.results.primaryFocus}</p>
+                      </div>
+                      `
+                          : ''
+                      }
+                      ${
+                        quizData.results?.serviceRecommendation
+                          ? `
+                      <div style="margin-bottom: 24px;">
+                        <p style="margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.5px;">Recommended service</p>
+                        <p style="margin: 0; font-size: 18px; color: #1f2937; font-weight: 600;">${quizData.results.serviceRecommendation}</p>
+                      </div>
+                      `
+                          : ''
+                      }
+                      ${
+                        quizData.results?.recommendations &&
+                        quizData.results.recommendations.length
+                          ? `
+                      <div style="margin-bottom: 24px; padding: 20px; background-color: #faf5ff; border-radius: 12px;">
+                        <p style="margin: 0 0 12px; font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.5px;">Personalized recommendations</p>
+                        <ul style="margin: 0; padding-left: 20px; color: #374151;">${quizData.results.recommendations.map((rec) => `<li style="margin-bottom: 8px;">${rec}</li>`).join('')}</ul>
+                      </div>
+                      `
+                          : ''
+                      }
+                      ${
+                        quizData.results?.nextSteps &&
+                        quizData.results.nextSteps.length
+                          ? `
+                      <div style="margin-bottom: 24px;">
+                        <p style="margin: 0 0 12px; font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.5px;">Next steps</p>
+                        <ul style="margin: 0; padding-left: 20px; color: #374151;">${quizData.results.nextSteps.map((step) => `<li style="margin-bottom: 8px;">${step}</li>`).join('')}</ul>
+                      </div>
+                      `
+                          : ''
+                      }
+                      <p style="margin: 24px 0 0; font-size: 16px; color: #374151;">We’ve received your responses and will reach out to you soon. If you’d like to schedule a free consultation in the meantime, reply to this email or call us at 407-782-5048.</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 24px 40px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center; font-size: 14px; color: #6b7280;">
+                      <p style="margin: 0;">Blessings,<br/><strong>The Angels Walking Team</strong></p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+        }
+      : null;
+
     // Send email to Gladys
     const gladysResult = await resend.emails.send(emailToGladys);
+
+    // Send confirmation to quiz-taker if they provided email
+    let userResult = { data: null };
+    if (emailToUser) {
+      try {
+        userResult = await resend.emails.send(emailToUser);
+      } catch (err) {
+        console.error('Quiz confirmation email to user failed:', err);
+      }
+    }
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
         emailSent: !!gladysResult.data,
+        userConfirmationSent: !!userResult?.data,
         submissionId,
       }),
     };
