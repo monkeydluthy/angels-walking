@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   ExternalLink, 
   BarChart3, 
@@ -11,42 +11,93 @@ import {
   Clock,
   Eye,
   BookOpen,
-  Star
+  Star,
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
+
+const defaultMetrics = {
+  pageviews: 0,
+  sessions: 0,
+  users: 0,
+  avgSessionDuration: '0:00',
+  formSubmits: 0,
+  phoneCalls: 0,
+  emailClicks: 0,
+  ctaClicks: 0,
+  quizCompletions: 0,
+  serviceViews: 0,
+  reviewActions: 0,
+};
+
+const placeholderTopPages = [
+  { path: '/', views: 0, label: 'Home' },
+  { path: '/contact', views: 0, label: 'Contact' },
+  { path: '/about', views: 0, label: 'About' },
+  { path: '/services', views: 0, label: 'Services' },
+  { path: '/self-care-quiz', views: 0, label: 'Self-Care Quiz' },
+];
+
+function formatPageLabel(path) {
+  if (!path || path === '/') return 'Home';
+  const segment = path.replace(/^\//, '').replace(/-/g, ' ');
+  return segment.charAt(0).toUpperCase() + segment.slice(1);
+}
 
 const Analytics = () => {
   const measurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
   const isConfigured = !!measurementId;
-  const [timeRange, setTimeRange] = useState('30'); // days
+  const [timeRange, setTimeRange] = useState('30');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [metrics, setMetrics] = useState(defaultMetrics);
+  const [topPages, setTopPages] = useState(placeholderTopPages);
+  const [apiConfigured, setApiConfigured] = useState(false);
 
-  // Mock data structure - in production, this would come from GA API
-  // For now, showing structure and linking to GA dashboard
-  const mockMetrics = {
-    pageviews: 0,
-    sessions: 0,
-    users: 0,
-    avgSessionDuration: '0:00',
-    formSubmits: 0,
-    phoneCalls: 0,
-    emailClicks: 0,
-    ctaClicks: 0,
-    quizCompletions: 0,
-    serviceViews: 0,
-    reviewActions: 0,
-  };
+  const baseUrl = process.env.REACT_APP_NETLIFY_FUNCTIONS_URL || '';
 
-  const mockTopPages = [
-    { path: '/', views: 0, label: 'Home' },
-    { path: '/contact', views: 0, label: 'Contact' },
-    { path: '/about', views: 0, label: 'About' },
-    { path: '/services', views: 0, label: 'Services' },
-    { path: '/self-care-quiz', views: 0, label: 'Self-Care Quiz' },
-    { path: '/spiritual-recovery', views: 0, label: 'Spiritual Recovery' },
-    { path: '/angel-card-reading', views: 0, label: 'Angel Card Reading' },
-    { path: '/addiction-recovery', views: 0, label: 'Addiction Recovery' },
-    { path: '/life-coaching', views: 0, label: 'Life Coaching' },
-    { path: '/success-stories', views: 0, label: 'Success Stories' },
-  ];
+  const fetchReport = useCallback(async () => {
+    if (!isConfigured) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const url = `${baseUrl}/.netlify/functions/ga-report?timeRange=${encodeURIComponent(timeRange)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setApiConfigured(!!data.configured);
+      if (data.error && !data.metrics) {
+        setError(data.error);
+        setMetrics(defaultMetrics);
+        setTopPages(placeholderTopPages);
+      } else if (data.metrics) {
+        setMetrics({
+          ...defaultMetrics,
+          ...data.metrics,
+        });
+        setTopPages(
+          (data.topPages && data.topPages.length > 0)
+            ? data.topPages.map((p) => ({
+                ...p,
+                label: p.label || formatPageLabel(p.path),
+              }))
+            : placeholderTopPages
+        );
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load analytics');
+      setMetrics(defaultMetrics);
+      setTopPages(placeholderTopPages);
+    } finally {
+      setLoading(false);
+    }
+  }, [baseUrl, timeRange, isConfigured]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   return (
     <div>
@@ -56,14 +107,46 @@ const Analytics = () => {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            disabled={loading}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:opacity-60"
           >
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
           </select>
+          <button
+            type="button"
+            onClick={() => fetchReport()}
+            disabled={loading}
+            className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-60 transition-colors"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <RefreshCw className="w-5 h-5" />
+            )}
+            <span className="ml-2">{loading ? 'Loading…' : 'Refresh'}</span>
+          </button>
         </div>
       </div>
+
+      {/* Backend not configured or API error */}
+      {isConfigured && !loading && error && (
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-lg shadow p-6 mb-6">
+          <div className="flex items-start">
+            <BarChart3 className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="ml-4 flex-1">
+              <h3 className="text-lg font-semibold text-amber-900 mb-1">
+                {apiConfigured ? 'Dashboard data unavailable' : 'Dashboard data not configured'}
+              </h3>
+              <p className="text-amber-800 mb-2">{error}</p>
+              <p className="text-sm text-amber-700">
+                Add <code className="bg-amber-100 px-1 rounded">GA_PROPERTY_ID</code> and service account credentials in Netlify (see <strong>GA_REPORT_SETUP.md</strong>). You can still use the link below to view reports in Google Analytics.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Setup Status */}
       {!isConfigured && (
@@ -103,7 +186,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.pageviews || '--'}
+            {loading ? '…' : (metrics.pageviews ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Pageviews</div>
         </div>
@@ -116,7 +199,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.sessions || '--'}
+            {loading ? '…' : (metrics.sessions ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Sessions</div>
         </div>
@@ -129,7 +212,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.users || '--'}
+            {loading ? '…' : (metrics.users ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Users</div>
         </div>
@@ -142,7 +225,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.avgSessionDuration || '--'}
+            {loading ? '…' : (metrics.avgSessionDuration ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Avg. Session</div>
         </div>
@@ -158,7 +241,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.formSubmits || '--'}
+            {loading ? '…' : (metrics.formSubmits ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Form Submits</div>
         </div>
@@ -171,7 +254,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.phoneCalls || '--'}
+            {loading ? '…' : (metrics.phoneCalls ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Phone Calls</div>
         </div>
@@ -184,7 +267,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.emailClicks || '--'}
+            {loading ? '…' : (metrics.emailClicks ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Email Clicks</div>
         </div>
@@ -197,7 +280,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.ctaClicks || '--'}
+            {loading ? '…' : (metrics.ctaClicks ?? '--')}
           </div>
           <div className="text-sm text-gray-600">CTA Clicks</div>
         </div>
@@ -213,7 +296,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.quizCompletions || '--'}
+            {loading ? '…' : (metrics.quizCompletions ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Quiz Completions</div>
         </div>
@@ -226,7 +309,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.serviceViews || '--'}
+            {loading ? '…' : (metrics.serviceViews ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Service Views</div>
         </div>
@@ -239,7 +322,7 @@ const Analytics = () => {
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {mockMetrics.reviewActions || '--'}
+            {loading ? '…' : (metrics.reviewActions ?? '--')}
           </div>
           <div className="text-sm text-gray-600">Review Actions</div>
         </div>
@@ -253,7 +336,7 @@ const Analytics = () => {
           </h2>
         </div>
         <div className="space-y-2">
-          {mockTopPages.map((page, index) => (
+          {topPages.map((page, index) => (
             <div
               key={page.path}
               className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
@@ -266,7 +349,7 @@ const Analytics = () => {
                 <span className="text-sm text-gray-500">{page.path}</span>
               </div>
               <span className="text-lg font-bold text-primary-600">
-                {page.views || 0} views
+                {loading ? '…' : (page.views ?? 0)} views
               </span>
             </div>
           ))}
