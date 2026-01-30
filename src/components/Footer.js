@@ -26,7 +26,6 @@ const Footer = () => {
       { name: 'Self-Care Quiz', path: '/self-care-quiz' },
       { name: 'Success Stories', path: '/success-stories' },
       { name: 'FAQ', path: '/faq' },
-      { name: 'Blog', path: '/blog' },
       { name: 'About', path: '/about' },
     ],
     support: [
@@ -34,6 +33,7 @@ const Footer = () => {
       { name: 'Book Session', path: '/contact' },
       { name: 'Privacy Policy', path: '/privacy' },
       { name: 'Terms of Service', path: '/terms' },
+      { name: 'Medical Disclaimer', path: '/medical-disclaimer' },
     ],
   };
 

@@ -18,7 +18,6 @@ import LifeCoaching from './pages/LifeCoaching';
 import SelfCareQuiz from './pages/SelfCareQuiz';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
-import Blog from './pages/Blog';
 import SuccessStories from './pages/SuccessStories';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -27,6 +26,10 @@ import AdminSuccessStories from './pages/admin/SuccessStories';
 import FormSubmissions from './pages/admin/FormSubmissions';
 import Analytics from './pages/admin/Analytics';
 import Settings from './pages/admin/Settings';
+import NotFound from './pages/NotFound';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import MedicalDisclaimer from './pages/MedicalDisclaimer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -47,8 +50,10 @@ function App() {
             <Route path="/self-care-quiz" element={<SelfCareQuiz />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
-            <Route path="/blog" element={<Blog />} />
             <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/medical-disclaimer" element={<MedicalDisclaimer />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin/dashboard"
@@ -100,6 +105,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
       </main>
