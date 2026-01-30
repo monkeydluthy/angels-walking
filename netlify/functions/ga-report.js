@@ -5,26 +5,71 @@
 
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 
+// Normalize private key so OpenSSL can parse it (fixes "DECODER routines::unsupported").
+// Env vars may have: literal \n, real newlines, \r\n, or one line with newlines stripped.
+function normalizePrivateKey(key) {
+  if (!key || typeof key !== 'string') return '';
+  let k = key.trim();
+  // Literal backslash-n (e.g. from JSON or one-line paste) -> real newline
+  k = k.replace(/\\n/g, '\n');
+  // Normalize line endings
+  k = k.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  // If key is still one long line (Netlify sometimes strips newlines), rebuild PEM:
+  // Format is "-----BEGIN PRIVATE KEY-----\n<base64>\n-----END PRIVATE KEY-----"
+  if (!k.includes('\n') && k.includes('-----BEGIN') && k.includes('-----END')) {
+    const begin = '-----BEGIN PRIVATE KEY-----';
+    const end = '-----END PRIVATE KEY-----';
+    const startIdx = k.indexOf(begin) + begin.length;
+    const endIdx = k.indexOf(end);
+    if (startIdx > 0 && endIdx > startIdx) {
+      const base64 = k.slice(startIdx, endIdx).replace(/\s/g, '');
+      // Split base64 into 64-char lines (standard PEM)
+      const lines = base64.match(/.{1,64}/g) || [];
+      k = begin + '\n' + lines.join('\n') + '\n' + end;
+    }
+  }
+  return k;
+}
+
 function getCredentials() {
+  // Option 1: Base64-encoded JSON (avoids quoting/newline issues in Netlify UI)
+  const b64 = process.env.GA_SERVICE_ACCOUNT_JSON_B64;
+  if (b64) {
+    try {
+      const json = Buffer.from(b64, 'base64').toString('utf8');
+      const creds = JSON.parse(json);
+      return {
+        client_email: creds.client_email,
+        private_key: normalizePrivateKey(creds.private_key),
+      };
+    } catch (e) {
+      console.error('GA_SERVICE_ACCOUNT_JSON_B64 error:', e.message);
+      return null;
+    }
+  }
+
+  // Option 2: Raw JSON string (minify to one line or paste as-is if Netlify keeps newlines)
   const json = process.env.GA_SERVICE_ACCOUNT_JSON;
   if (json) {
     try {
       const creds = typeof json === 'string' ? JSON.parse(json) : json;
       return {
         client_email: creds.client_email,
-        private_key: (creds.private_key || '').replace(/\\n/g, '\n'),
+        private_key: normalizePrivateKey(creds.private_key),
       };
     } catch (e) {
       console.error('GA_SERVICE_ACCOUNT_JSON parse error:', e.message);
       return null;
     }
   }
+
+  // Option 3: Separate email + key (private key: use \n for newlines in Netlify)
   const email = process.env.GA_CLIENT_EMAIL;
   const key = process.env.GA_PRIVATE_KEY;
   if (email && key) {
     return {
-      client_email: email,
-      private_key: key.replace(/\\n/g, '\n'),
+      client_email: email.trim(),
+      private_key: normalizePrivateKey(key),
     };
   }
   return null;
@@ -66,7 +111,7 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        error: 'GA4 credentials missing (GA_SERVICE_ACCOUNT_JSON or GA_CLIENT_EMAIL + GA_PRIVATE_KEY)',
+        error: 'GA4 credentials missing (set GA_SERVICE_ACCOUNT_JSON, GA_SERVICE_ACCOUNT_JSON_B64, or GA_CLIENT_EMAIL + GA_PRIVATE_KEY in Netlify)',
         configured: true,
         metrics: null,
         topPages: [],
