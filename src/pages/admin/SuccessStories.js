@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase, getStorageUrl } from '../../lib/supabase';
 import { Plus, Edit, Trash2, Eye, EyeOff, Image as ImageIcon, Play } from 'lucide-react';
 import toast from 'react-hot-toast';
+import PageMeta from '../../components/PageMeta';
 
 const SuccessStories = () => {
   const [stories, setStories] = useState([]);
@@ -331,11 +332,14 @@ const SuccessStories = () => {
 
   return (
     <div>
+      <PageMeta title="Admin - Success Stories" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Success Stories</h1>
         <button
+          type="button"
           onClick={() => setShowForm(true)}
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700"
+          className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          aria-label="Add new success story"
         >
           <Plus className="w-5 h-5" />
           <span>Add New Story</span>
@@ -486,7 +490,8 @@ const SuccessStories = () => {
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300"
+                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                aria-label="Cancel and close form"
               >
                 Cancel
               </button>
@@ -546,9 +551,11 @@ const SuccessStories = () => {
                 </div>
                 <div className="flex space-x-2">
                   <button
+                    type="button"
                     onClick={() => togglePublish(story)}
-                    className="p-2 hover:bg-gray-100 rounded"
+                    className="p-2 hover:bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     title={story.is_published ? 'Unpublish' : 'Publish'}
+                    aria-label={story.is_published ? 'Unpublish story' : 'Publish story'}
                   >
                     {story.is_published ? (
                       <EyeOff className="w-4 h-4" />
@@ -557,16 +564,20 @@ const SuccessStories = () => {
                     )}
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleEdit(story)}
-                    className="p-2 hover:bg-gray-100 rounded"
+                    className="p-2 hover:bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     title="Edit"
+                    aria-label={`Edit ${story.name}`}
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(story.id)}
-                    className="p-2 hover:bg-red-100 rounded text-red-600"
+                    className="p-2 hover:bg-red-100 rounded text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                     title="Delete"
+                    aria-label={`Delete ${story.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

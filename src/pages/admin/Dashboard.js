@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { BookOpen, FileText, Eye, TrendingUp } from 'lucide-react';
+import PageMeta from '../../components/PageMeta';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -83,6 +84,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <PageMeta title="Admin - Dashboard" />
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

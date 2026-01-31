@@ -10,6 +10,7 @@ import {
   Users,
   Target,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const SpiritualRecovery = () => {
   const benefits = [
@@ -63,6 +64,10 @@ const SpiritualRecovery = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Spiritual Recovery Coaching"
+        description="Transform your life through spiritual recovery coaching. Address root causes, develop inner peace, and connect with your higher self. Orlando, FL and virtual."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div

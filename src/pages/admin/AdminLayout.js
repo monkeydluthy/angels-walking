@@ -50,8 +50,12 @@ const AdminLayout = ({ children }) => {
             <span className="font-bold text-gray-900">Admin Panel</span>
           </div>
           <button
+            type="button"
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-md text-gray-600 hover:bg-gray-100"
+            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            aria-label={sidebarOpen ? 'Close admin menu' : 'Open admin menu'}
+            aria-expanded={sidebarOpen}
+            aria-controls="admin-sidebar"
           >
             {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -61,9 +65,11 @@ const AdminLayout = ({ children }) => {
       <div className="flex">
         {/* Sidebar */}
         <aside
+          id="admin-sidebar"
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:transition-none`}
+          aria-label="Admin navigation"
         >
           <div className="h-full flex flex-col">
             {/* Logo */}
@@ -104,8 +110,10 @@ const AdminLayout = ({ children }) => {
             {/* Logout */}
             <div className="p-4 border-t">
               <button
+                type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                aria-label="Log out of admin"
               >
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>
@@ -122,9 +130,11 @@ const AdminLayout = ({ children }) => {
 
       {/* Overlay for mobile */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        <button
+          type="button"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden cursor-default focus:outline-none"
           onClick={() => setSidebarOpen(false)}
+          aria-label="Close admin menu"
         />
       )}
     </div>

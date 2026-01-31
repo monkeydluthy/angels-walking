@@ -15,6 +15,7 @@ import {
   Loader2,
   RefreshCw
 } from 'lucide-react';
+import PageMeta from '../../components/PageMeta';
 
 const defaultMetrics = {
   pageviews: 0,
@@ -101,6 +102,7 @@ const Analytics = () => {
 
   return (
     <div>
+      <PageMeta title="Admin - Analytics" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
         <div className="flex items-center space-x-4">
@@ -118,7 +120,8 @@ const Analytics = () => {
             type="button"
             onClick={() => fetchReport()}
             disabled={loading}
-            className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-60 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            aria-label="Refresh analytics data"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />

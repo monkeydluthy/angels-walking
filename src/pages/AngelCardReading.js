@@ -10,6 +10,7 @@ import {
   Clock,
   CheckCircle,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const AngelCardReading = () => {
   const benefits = [
@@ -73,6 +74,10 @@ const AngelCardReading = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Angel Card Reading"
+        description="Receive divine messages and clarity through professional angel card readings. Divine guidance, life path clarity, and spiritual insights. Orlando, FL and virtual."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div

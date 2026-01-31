@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Quote, ExternalLink } from 'lucide-react';
 import { fetchGoogleReviews, fetchBusinessRating } from '../lib/googleReviews';
@@ -243,7 +244,7 @@ const TestimonialsSection = () => {
                 : 'Based on client sessions and spiritual recovery coaching experiences'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {googlePlaceUrl && (
+              {googlePlaceUrl ? (
                 <>
                   <a
                     href={googlePlaceUrl}
@@ -266,12 +267,14 @@ const TestimonialsSection = () => {
                     <ExternalLink className="w-4 h-4 ml-2" />
                   </a>
                 </>
-              )}
-              {!googlePlaceUrl && (
-                <>
-                  <button className="btn-primary">Read All Reviews</button>
-                  <button className="btn-outline">Leave a Review</button>
-                </>
+              ) : (
+                <p className="text-sm text-gray-500 italic">
+                  Review links will appear here once Google Place is set up. In the meantime, share your experience with us via the{' '}
+                  <Link to="/contact" className="text-primary-600 hover:underline font-medium">
+                    Contact
+                  </Link>{' '}
+                  page.
+                </p>
               )}
             </div>
           </div>

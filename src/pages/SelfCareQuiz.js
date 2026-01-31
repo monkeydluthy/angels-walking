@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { analytics } from '../lib/analytics';
 import { sendQuizEmail } from '../lib/email';
+import PageMeta from '../components/PageMeta';
 
 const SelfCareQuiz = () => {
   const navigate = useNavigate();
@@ -585,22 +586,31 @@ const SelfCareQuiz = () => {
             {/* CTA Buttons */}
             <div className="text-center space-y-4">
               <button
+                type="button"
                 onClick={() => navigate('/contact')}
-                className="btn-primary text-lg px-8 py-4"
+                className="btn-primary text-lg px-8 py-4 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                aria-label="Schedule free consultation"
               >
                 Schedule Free Consultation
               </button>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onClick={() => window.print()} className="btn-outline">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="btn-outline focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  aria-label="Print results"
+                >
                   Print Results
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setResults(null);
                     setCurrentStep(0);
                     setAnswers({});
                   }}
-                  className="btn-outline"
+                  className="btn-outline focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  aria-label="Retake quiz"
                 >
                   Retake Quiz
                 </button>
@@ -614,6 +624,10 @@ const SelfCareQuiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Self-Care Quiz"
+        description="Free 5-minute self-care assessment. Get personalized spiritual recovery recommendations and simple actions to transform your life."
+      />
       <div className="container-custom py-16">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
@@ -716,13 +730,15 @@ const SelfCareQuiz = () => {
           {/* Navigation */}
           <div className="flex justify-between items-center mt-8">
             <button
+              type="button"
               onClick={prevStep}
               disabled={currentStep === 0}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                 currentStep === 0
                   ? 'text-gray-400 cursor-not-allowed'
                   : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
               }`}
+              aria-label="Previous question"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Previous</span>
@@ -730,28 +746,32 @@ const SelfCareQuiz = () => {
 
             {currentStep === questions.length - 1 ? (
               <button
+                type="button"
                 onClick={nextStep}
                 disabled={
                   isLoading || Object.keys(answers).length < questions.length
                 }
-                className={`flex items-center space-x-2 px-8 py-4 rounded-lg font-semibold transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-8 py-4 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                   isLoading || Object.keys(answers).length < questions.length
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'btn-primary'
                 }`}
+                aria-label="Submit quiz and see results"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
             ) : (
               <button
+                type="button"
                 onClick={nextStep}
                 disabled={!answers[currentQuestion.id]}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                   !answers[currentQuestion.id]
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'btn-primary'
                 }`}
+                aria-label="Next question"
               >
                 <span>Next</span>
                 <ArrowRight className="w-5 h-5" />

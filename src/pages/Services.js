@@ -11,6 +11,7 @@ import {
   Award,
   Target,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const Services = () => {
   const services = [
@@ -129,6 +130,10 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Services"
+        description="Spiritual recovery coaching, angel card reading, addiction recovery support, and life coaching. Personalized programs in Orlando, FL and virtually."
+      />
       <div className="container-custom py-16">
         {/* Header */}
         <motion.div

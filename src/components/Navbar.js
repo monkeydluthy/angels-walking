@@ -29,7 +29,7 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg w-full -ml-0 -pl-0">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg w-full -ml-0 -pl-0" aria-label="Main navigation">
       {/* Mobile Layout */}
       <div className="lg:hidden relative">
         <div className="flex items-center h-16">
@@ -47,8 +47,12 @@ const Navbar = () => {
 
           {/* Hamburger Menu - Absolute right */}
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="absolute right-4 p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200"
+            className="absolute right-4 p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            aria-controls="mobile-nav-menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -58,6 +62,9 @@ const Navbar = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
+              id="mobile-nav-menu"
+              role="dialog"
+              aria-label="Main navigation"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -100,7 +107,8 @@ const Navbar = () => {
                   <a
                     href="tel:407-782-5048"
                     onClick={() => analytics.trackEvent('phone_call', { location: 'mobile_menu' })}
-                    className="flex items-center justify-center space-x-3 px-6 py-3 text-primary-600 hover:text-primary-700 transition-all duration-300 rounded-xl mx-3 hover:bg-white/90 mb-3"
+                    className="flex items-center justify-center space-x-3 px-6 py-3 text-primary-600 hover:text-primary-700 transition-all duration-300 rounded-xl mx-3 hover:bg-white/90 mb-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                    aria-label="Call 407-782-5048"
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-spiritual-600 rounded-full flex items-center justify-center shadow-lg">
                       <Phone className="w-5 h-5 text-white" />
@@ -174,7 +182,8 @@ const Navbar = () => {
               <a
                 href="tel:407-782-5048"
                 onClick={() => analytics.trackEvent('phone_call', { location: 'desktop_navbar' })}
-                className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 transition-colors duration-200"
+                className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded"
+                aria-label="Call 407-782-5048"
               >
                 <Phone className="w-4 h-4" />
                 <span className="font-medium">407-782-5048</span>

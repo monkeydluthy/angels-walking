@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, Sparkles, ArrowRight } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const NotFound = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-spiritual-50 pt-24 pb-16 px-4">
+      <PageMeta title="Page Not Found" description="This page may have moved or the link might be incorrect. Angels Walking - Spiritual Recovery & Life Coaching." />
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

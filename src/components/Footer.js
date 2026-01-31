@@ -38,9 +38,9 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { name: 'Facebook', icon: Facebook, href: 'https://facebook.com' },
-    { name: 'Instagram', icon: Instagram, href: 'https://instagram.com' },
-    { name: 'YouTube', icon: Youtube, href: 'https://youtube.com' },
+    { name: 'Facebook', icon: Facebook },
+    { name: 'Instagram', icon: Instagram },
+    { name: 'YouTube', icon: Youtube },
   ];
 
   return (
@@ -86,7 +86,8 @@ const Footer = () => {
                   </p>
                   <a
                     href="tel:407-782-5048"
-                    className="text-white hover:text-primary-300 transition-colors duration-200 font-bold text-lg"
+                    className="text-white hover:text-primary-300 transition-colors duration-200 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                    aria-label="Call 407-782-5048"
                   >
                     407-782-5048
                   </a>
@@ -106,7 +107,8 @@ const Footer = () => {
                   <a
                     href="mailto:gladys@angelswalking.com"
                     onClick={() => analytics.trackEvent('email_click', { location: 'footer', email: 'gladys@angelswalking.com' })}
-                    className="text-white hover:text-spiritual-300 transition-colors duration-200 font-bold text-lg"
+                    className="text-white hover:text-spiritual-300 transition-colors duration-200 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-spiritual-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                    aria-label="Email gladys@angelswalking.com"
                   >
                     gladys@angelswalking.com
                   </a>
@@ -201,23 +203,21 @@ const Footer = () => {
             </h5>
             <div className="flex justify-center space-x-6">
               {socialLinks.map((social) => (
-                <a
+                <span
                   key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative"
-                  aria-label={social.name}
+                  className="group relative inline-block cursor-default"
+                  aria-label={`${social.name} — Coming soon`}
+                  title="Coming soon"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:scale-110 border border-white/10">
-                    <social.icon className="w-7 h-7 text-gray-300 group-hover:text-white transition-colors duration-200" />
+                  <div className="w-14 h-14 bg-gray-800/80 rounded-2xl flex items-center justify-center shadow-lg border border-white/10 opacity-75 transition-all duration-300 group-hover:opacity-90">
+                    <social.icon className="w-7 h-7 text-gray-500" />
                   </div>
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <span className="text-xs text-gray-400 whitespace-nowrap">
-                      {social.name}
+                      Coming soon
                     </span>
                   </div>
-                </a>
+                </span>
               ))}
             </div>
           </div>

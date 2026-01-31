@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { initGA } from './lib/analytics';
 import './index.css';
@@ -15,8 +16,9 @@ if (measurementId) {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
+    <HelmetProvider>
+      <BrowserRouter>
+        <App />
       <Toaster
         position="top-right"
         toastOptions={{
@@ -34,6 +36,7 @@ root.render(
           },
         }}
       />
-    </BrowserRouter>
+      </BrowserRouter>
+    </HelmetProvider>
   </React.StrictMode>
 );

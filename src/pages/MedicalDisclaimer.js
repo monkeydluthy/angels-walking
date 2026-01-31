@@ -2,10 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const MedicalDisclaimer = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-spiritual-50 pt-24 pb-16">
+      <PageMeta
+        title="Medical Disclaimer"
+        description="Spiritual recovery coaching and angel card reading are complementary practices and do not replace professional medical or psychological care."
+      />
       <div className="container-custom max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

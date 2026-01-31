@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Star, Image as ImageIcon, Play, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import PageMeta from '../components/PageMeta';
 
 const SuccessStories = () => {
   const [successStories, setSuccessStories] = useState([]);
@@ -42,6 +43,10 @@ const SuccessStories = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Success Stories"
+        description="Real transformations from clients who chose spiritual recovery coaching, angel card readings, and life coaching. Healing and hope at Angels Walking."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div
@@ -183,6 +188,9 @@ const SuccessStories = () => {
         <AnimatePresence>
           {selectedVideo && (
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Video: ${selectedVideo.name}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -203,8 +211,10 @@ const SuccessStories = () => {
                     <p className="text-white/80 text-sm">{selectedVideo.service}</p>
                   </div>
                   <button
+                    type="button"
                     onClick={() => setSelectedVideo(null)}
-                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent"
+                    aria-label="Close video"
                   >
                     <X className="w-6 h-6 text-white" />
                   </button>

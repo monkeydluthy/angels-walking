@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Check, X, Eye, Filter, Mail, MailCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
+import PageMeta from '../../components/PageMeta';
 
 const FormSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -271,6 +272,7 @@ const FormSubmissions = () => {
 
   return (
     <div>
+      <PageMeta title="Admin - Form Submissions" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Form Submissions</h1>
         <div className="flex items-center space-x-2">
@@ -278,7 +280,8 @@ const FormSubmissions = () => {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 border rounded-lg"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            aria-label="Filter submissions"
           >
             <option value="all">All Submissions</option>
             <option value="unread">Unread Only</option>
@@ -393,18 +396,22 @@ const FormSubmissions = () => {
                 <td className="px-6 py-4">
                   <div className="flex items-center space-x-2">
                     <button
+                      type="button"
                       onClick={() => setSelectedSubmission(submission)}
-                      className="p-2 hover:bg-gray-100 rounded"
+                      className="p-2 hover:bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                       title="View Details"
+                      aria-label="View submission details"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button
+                      type="button"
                       onClick={() => markAsRead(submission.id, submission.read)}
-                      className="p-2 hover:bg-gray-100 rounded"
+                      className="p-2 hover:bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                       title={
                         submission.read ? 'Mark as Unread' : 'Mark as Read'
                       }
+                      aria-label={submission.read ? 'Mark as unread' : 'Mark as read'}
                     >
                       {submission.read ? (
                         <X className="w-4 h-4 text-gray-600" />
@@ -435,8 +442,10 @@ const FormSubmissions = () => {
                 Submission Details
               </h2>
               <button
+                type="button"
                 onClick={() => setSelectedSubmission(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-1"
+                aria-label="Close submission details"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -477,16 +486,18 @@ const FormSubmissions = () => {
               </div>
               <div className="mt-6 flex space-x-4">
                 <button
+                  type="button"
                   onClick={() =>
                     markAsRead(selectedSubmission.id, selectedSubmission.read)
                   }
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   {selectedSubmission.read ? 'Mark as Unread' : 'Mark as Read'}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setSelectedSubmission(null)}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   Close
                 </button>

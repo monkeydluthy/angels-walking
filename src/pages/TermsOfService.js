@@ -2,10 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FileText, ArrowLeft } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-spiritual-50 pt-24 pb-16">
+      <PageMeta
+        title="Terms of Service"
+        description="Terms of use for Angels Walking spiritual recovery coaching, angel card reading, and life coaching services."
+      />
       <div className="container-custom max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

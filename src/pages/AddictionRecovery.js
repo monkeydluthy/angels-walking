@@ -12,6 +12,7 @@ import {
   Award,
   Sparkles,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const AddictionRecovery = () => {
   const benefits = [
@@ -102,6 +103,10 @@ const AddictionRecovery = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Addiction Recovery Support"
+        description="Holistic addiction recovery with spiritual guidance and practical tools. Break free from destructive patterns and create lasting change. Complementary to professional care."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div

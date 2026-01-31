@@ -7,6 +7,7 @@ import {
   MessageCircle,
   ArrowRight,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const FAQ = () => {
   const [openItems, setOpenItems] = useState(new Set());
@@ -76,6 +77,10 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="FAQ"
+        description="Frequently asked questions about spiritual recovery coaching, angel card reading, sessions, and life coaching. Orlando, FL and virtual."
+      />
       <div className="container-custom py-16">
         {/* Header */}
         <motion.div
@@ -108,20 +113,28 @@ const FAQ = () => {
                 className="bg-white rounded-xl shadow-lg overflow-hidden"
               >
                 <button
+                  type="button"
                   onClick={() => toggleItem(index)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-inset rounded-xl"
+                  aria-expanded={openItems.has(index)}
+                  aria-controls={`faq-answer-${index}`}
+                  id={`faq-question-${index}`}
+                  aria-label={openItems.has(index) ? `Collapse: ${faq.question}` : `Expand: ${faq.question}`}
                 >
                   <h3 className="text-lg font-semibold text-gray-900 pr-4">
                     {faq.question}
                   </h3>
                   {openItems.has(index) ? (
-                    <ChevronUp className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-primary-600 flex-shrink-0" aria-hidden />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-primary-600 flex-shrink-0" aria-hidden />
                   )}
                 </button>
                 {openItems.has(index) && (
                   <motion.div
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}

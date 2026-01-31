@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { analytics } from '../lib/analytics';
 import { sendContactEmail } from '../lib/email';
+import PageMeta from '../components/PageMeta';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -156,6 +157,10 @@ const Contact = () => {
         <div className="absolute top-1/2 left-1/4 w-60 h-60 bg-healing-100 rounded-full opacity-10 blur-3xl"></div>
       </div>
 
+      <PageMeta
+        title="Contact"
+        description="Book a free consultation or session. Spiritual recovery coaching, angel card reading, and life coaching in Orlando, FL. Virtual sessions available."
+      />
       <div className="container-custom py-8 md:py-16 relative z-10">
         {/* Main content background */}
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-6 md:p-8 lg:p-12 mt-8 md:mt-12">
@@ -165,8 +170,8 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <div className="w-20 h-20 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-black">
-              <MessageCircle className="w-10 h-10 text-black" />
+            <div className="w-20 h-20 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-primary-200">
+              <MessageCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-900 mb-4 md:mb-6 text-center">
               Let's Start Your{' '}

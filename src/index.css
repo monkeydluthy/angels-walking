@@ -37,6 +37,25 @@
     font-family: 'Playfair Display', serif;
     font-weight: 600;
   }
+
+  /* Accessible focus: visible outline for keyboard users (focus-visible only) */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #2C4A6B;
+    outline-offset: 2px;
+  }
+
+  /* Don't show outline for mouse users; rely on component-level focus:ring where needed */
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible),
+  input:focus:not(:focus-visible),
+  select:focus:not(:focus-visible),
+  textarea:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 @layer components {

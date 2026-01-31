@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { Sparkles, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
+import PageMeta from '../../components/PageMeta';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -35,6 +36,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 flex items-center justify-center p-4">
+      <PageMeta title="Admin - Login" />
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-4">

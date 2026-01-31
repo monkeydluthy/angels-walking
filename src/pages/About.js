@@ -11,6 +11,7 @@ import {
   Target,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import PageMeta from '../components/PageMeta';
 
 const About = () => {
   const credentials = [
@@ -64,11 +65,15 @@ const About = () => {
     { icon: Users, number: '500+', label: 'Lives Transformed' },
     { icon: Clock, number: '10+', label: 'Years Experience' },
     { icon: Award, number: '100%', label: 'Certified Professional' },
-    { icon: Heart, number: '24/7', label: 'Support Available' },
+    { icon: Heart, number: '24hr', label: 'Response Time' },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="About"
+        description="Meet Gladys Schmanski, certified life coach and angel card reader. From personal struggle to spiritual awakening—helping others find healing, hope, and their highest possibility."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div

@@ -16,6 +16,7 @@ import ServicesOverview from '../components/ServicesOverview';
 import AboutPreview from '../components/AboutPreview';
 import TestimonialsSection from '../components/TestimonialsSection';
 import CTASection from '../components/CTASection';
+import PageMeta from '../components/PageMeta';
 
 const Home = () => {
   const stats = [
@@ -53,6 +54,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <PageMeta isHome />
       {/* Hero Section */}
       <HeroSection />
 

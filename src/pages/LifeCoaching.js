@@ -12,6 +12,7 @@ import {
   Award,
   Zap,
 } from 'lucide-react';
+import PageMeta from '../components/PageMeta';
 
 const LifeCoaching = () => {
   const benefits = [
@@ -102,6 +103,10 @@ const LifeCoaching = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-spiritual-50 pt-16">
+      <PageMeta
+        title="Life Coaching"
+        description="Personal growth, goal achievement, and spiritual consciousness expansion. Eliminate negative thinking and reach your highest possibility. Orlando, FL and virtual."
+      />
       <div className="container-custom py-16">
         {/* Hero Section */}
         <motion.div
