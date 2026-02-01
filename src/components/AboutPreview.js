@@ -4,12 +4,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Heart, Star, Award } from 'lucide-react';
 
 const AboutPreview = () => {
-  const credentials = [
-    { icon: Award, text: 'Certified Life Coach' },
-    { icon: Star, text: 'Angel Card Reader' },
-    { icon: Heart, text: 'Spiritual Recovery Specialist' },
-  ];
-
   return (
     <section className="section-padding">
       <div className="container-custom">
