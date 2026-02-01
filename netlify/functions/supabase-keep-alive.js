@@ -1,13 +1,6 @@
-/**
- * Netlify Function: Ping Supabase with a minimal query to keep the free-tier
- * project from pausing due to inactivity.
- *
- * Run on a schedule via:
- * 1. Netlify UI: Site → Functions → supabase-keep-alive → Trigger → Schedule (e.g. "0 */6 * * *" for every 6 hours)
- * 2. External cron: GET https://your-site.netlify.app/.netlify/functions/supabase-keep-alive every 6–12 hours (e.g. cron-job.org, Uptime Robot)
- *
- * Env: Uses SUPABASE_URL + SUPABASE_ANON_KEY, or REACT_APP_SUPABASE_URL + REACT_APP_SUPABASE_ANON_KEY if set.
- */
+// Netlify Function: Ping Supabase to keep free-tier instance active
+// Schedule via external cron (e.g. cron-job.org) every 6-12 hours
+// GET https://your-site.netlify.app/.netlify/functions/supabase-keep-alive
 
 const { createClient } = require('@supabase/supabase-js');
 
@@ -16,13 +9,23 @@ const supabaseUrl =
 const supabaseAnonKey =
   process.env.SUPABASE_ANON_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-exports.handler = async function (event, context) {
+exports.handler = async (event, context) => {
+  // Allow GET requests (for cron jobs)
+  if (event.httpMethod && event.httpMethod !== 'GET') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed. Use GET.' }),
+      headers: { 'Content-Type': 'application/json' },
+    };
+  }
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return {
       statusCode: 500,
       body: JSON.stringify({
         ok: false,
-        error: 'Missing SUPABASE_URL or SUPABASE_ANON_KEY (or REACT_APP_* equivalents)',
+        error:
+          'Missing SUPABASE_URL or SUPABASE_ANON_KEY (or REACT_APP_* equivalents)',
       }),
       headers: { 'Content-Type': 'application/json' },
     };
@@ -51,7 +54,8 @@ exports.handler = async function (event, context) {
           statusCode: 200,
           body: JSON.stringify({
             ok: true,
-            message: 'Keep-alive ran; Supabase reachable (query returned no rows or RLS applied).',
+            message:
+              'Keep-alive ran; Supabase reachable (query returned no rows or RLS applied).',
           }),
           headers: { 'Content-Type': 'application/json' },
         };
@@ -60,7 +64,10 @@ exports.handler = async function (event, context) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ ok: true, message: 'Supabase keep-alive ping succeeded.' }),
+      body: JSON.stringify({
+        ok: true,
+        message: 'Supabase keep-alive ping succeeded.',
+      }),
       headers: { 'Content-Type': 'application/json' },
     };
   } catch (err) {
