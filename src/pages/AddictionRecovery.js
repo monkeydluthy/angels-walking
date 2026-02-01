@@ -142,7 +142,7 @@ const AddictionRecovery = () => {
           </div>
         </motion.div>
 
-        {/* What is Spiritual Recovery */}
+        {/* What is Addiction Recovery Support */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,21 +151,21 @@ const AddictionRecovery = () => {
         >
           <div className="bg-white rounded-xl p-8 shadow-lg">
             <h2 className="text-3xl font-serif font-bold text-gray-900 mb-8 text-center">
-              What is Spiritual <span className="text-gradient">Recovery</span>?
+              What is Addiction Recovery <span className="text-gradient">Support</span>?
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                  Spiritual recovery is a holistic approach that addresses the
-                  root causes of addiction through spiritual healing and
-                  personal transformation. Unlike traditional methods that focus
-                  solely on behavior modification, spiritual recovery helps you
-                  connect with your higher self and discover your true purpose.
+                  Addiction recovery support at Angels Walking uses a holistic,
+                  spiritual approach that addresses the root causes of addiction
+                  through spiritual healing and personal transformation. Unlike
+                  methods that focus solely on behavior modification, this work
+                  helps you connect with your higher self and discover your true purpose.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
                   Addiction often stems from a disconnection from our spiritual
                   essence and a search for meaning or comfort in external
-                  substances or behaviors. Through spiritual recovery, we work
+                  substances or behaviors. Through this support, we work
                   together to heal the underlying wounds, build inner strength,
                   and create a life filled with purpose and joy.
                 </p>
@@ -177,18 +177,12 @@ const AddictionRecovery = () => {
                 </p>
               </div>
               <div className="relative">
-                <div className="w-full h-80 bg-gradient-to-br from-primary-100 via-spiritual-100 to-healing-100 rounded-2xl shadow-2xl overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-32 h-32 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Shield className="w-16 h-16 text-white" />
-                      </div>
-                      <h3 className="text-2xl font-serif font-bold text-gray-800 mb-2">
-                        Inner Strength
-                      </h3>
-                      <p className="text-gray-600">Rediscover Your True Self</p>
-                    </div>
-                  </div>
+                <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                  <img
+                    src="/addiction-recovery.png"
+                    alt="Addiction recovery: hope, freedom, and new beginnings"
+                    className="w-full h-full object-cover object-center"
+                  />
                 </div>
               </div>
             </div>

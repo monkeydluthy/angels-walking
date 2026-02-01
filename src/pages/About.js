@@ -102,23 +102,12 @@ const About = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="relative">
-              <div className="w-full h-96 md:h-[500px] bg-gradient-to-br from-primary-100 via-spiritual-100 to-healing-100 rounded-2xl shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-32 h-32 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Sparkles className="w-16 h-16 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-serif font-bold text-gray-800 mb-2">
-                      Gladys Schmanski
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      Spiritual Recovery Coach
-                    </p>
-                    <p className="text-sm text-gray-500 max-w-xs mx-auto">
-                      "Where there is healing, there is hope"
-                    </p>
-                  </div>
-                </div>
+              <div className="w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                <img
+                  src="/gladys-3.jpg"
+                  alt="Gladys Schmanski, Spiritual Recovery Coach"
+                  className="w-full h-full object-cover object-[center_25%]"
+                />
               </div>
             </div>
           </motion.div>

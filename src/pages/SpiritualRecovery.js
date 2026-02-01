@@ -103,6 +103,39 @@ const SpiritualRecovery = () => {
           </div>
         </motion.div>
 
+        {/* Intro + Image */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="mb-16"
+        >
+          <div className="bg-white rounded-xl p-8 shadow-lg">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <h2 className="text-3xl font-serif font-bold text-gray-900 mb-6">
+                  Where There Is <span className="text-gradient">Healing</span>, There Is Hope
+                </h2>
+                <p className="text-lg text-gray-600 leading-relaxed mb-6">
+                  Spiritual recovery coaching addresses the root causes of your challenges and guides you toward lasting transformation. Connect with your higher self and find inner peace through a practice built on compassion and clarity.
+                </p>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Whether you're seeking to release negative thinking, discover your purpose, or build unshakeable self-esteem, this work meets you where you are and supports you every step of the way.
+                </p>
+              </div>
+              <div className="relative">
+                <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                  <img
+                    src="/spiritual-recovery.jpg"
+                    alt="Spiritual recovery: peace, hope, and connection with nature"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* What You'll Experience */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

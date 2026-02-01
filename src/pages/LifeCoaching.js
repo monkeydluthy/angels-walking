@@ -179,20 +179,12 @@ const LifeCoaching = () => {
                 </p>
               </div>
               <div className="relative">
-                <div className="w-full h-80 bg-gradient-to-br from-primary-100 via-spiritual-100 to-healing-100 rounded-2xl shadow-2xl overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-32 h-32 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Star className="w-16 h-16 text-white" />
-                      </div>
-                      <h3 className="text-2xl font-serif font-bold text-gray-800 mb-2">
-                        Your Highest Self
-                      </h3>
-                      <p className="text-gray-600">
-                        Unlock Your Full Potential
-                      </p>
-                    </div>
-                  </div>
+                <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                  <img
+                    src="/life-coaching.jpeg"
+                    alt="Life coaching: aspiration, growth, and reaching your full potential"
+                    className="w-full h-full object-cover object-center"
+                  />
                 </div>
               </div>
             </div>

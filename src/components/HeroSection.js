@@ -86,19 +86,13 @@ const HeroSection = () => {
             className="relative"
           >
             <div className="relative">
-              {/* Main Image Placeholder */}
-              <div className="relative w-full h-96 md:h-[500px] bg-gradient-to-br from-primary-100 via-spiritual-100 to-healing-100 rounded-2xl shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-32 h-32 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Sparkles className="w-16 h-16 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-serif font-bold text-gray-800 mb-2">
-                      Gladys Schmanski
-                    </h3>
-                    <p className="text-gray-600">Spiritual Recovery Coach</p>
-                  </div>
-                </div>
+              {/* Hero Image */}
+              <div className="relative w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                <img
+                  src="/gladys-1.png"
+                  alt="Gladys Schmanski, Spiritual Recovery Coach"
+                  className="w-full h-full object-cover object-center"
+                />
 
                 {/* Simple Location Badge */}
                 <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">

@@ -22,33 +22,13 @@ const AboutPreview = () => {
             className="relative"
           >
             <div className="relative">
-              {/* Main Image Placeholder */}
-              <div className="relative w-full h-96 md:h-[500px] bg-gradient-to-br from-primary-100 via-spiritual-100 to-healing-100 rounded-2xl shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-32 h-32 bg-spiritual-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Heart className="w-16 h-16 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-serif font-bold text-gray-800 mb-2">
-                      Gladys Schmanski
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      Spiritual Recovery Coach
-                    </p>
-                    <div className="flex justify-center space-x-4">
-                      {credentials.map((credential, index) => (
-                        <div key={index} className="text-center">
-                          <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <credential.icon className="w-4 h-4 text-primary-600" />
-                          </div>
-                          <p className="text-xs text-gray-600">
-                            {credential.text}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              {/* About Image */}
+              <div className="relative w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
+                <img
+                  src="/gladys-2.png"
+                  alt="Gladys Schmanski, Spiritual Recovery Coach"
+                  className="w-full h-full object-cover object-center"
+                />
               </div>
 
               {/* Floating Elements */}
