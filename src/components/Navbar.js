@@ -33,16 +33,19 @@ const Navbar = () => {
       {/* Mobile Layout */}
       <div className="lg:hidden relative">
         <div className="flex items-center h-16">
-          {/* Logo - Absolute left */}
+          {/* Logo - Absolute left, inset from edge on mobile */}
           <Link
             to="/"
-            className="absolute left-0 flex items-center -ml-4 -pl-4"
+            className="absolute left-4 flex items-center"
           >
-            <img
-              src="/logo-transparent.png"
-              alt="Angels Walking"
-              className="h-12 w-auto object-contain"
-            />
+            <picture>
+              <source srcSet="/logo-transparent.webp" type="image/webp" />
+              <img
+                src="/logo-transparent.png"
+                alt="Angels Walking"
+                className="h-12 w-auto object-contain"
+              />
+            </picture>
           </Link>
 
           {/* Hamburger Menu - Absolute right */}
@@ -135,11 +138,14 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center">
-              <img
-                src="/logo-transparent.png"
-                alt="Angels Walking"
-                className="h-16 w-auto object-contain"
-              />
+              <picture>
+                <source srcSet="/logo-transparent.webp" type="image/webp" />
+                <img
+                  src="/logo-transparent.png"
+                  alt="Angels Walking"
+                  className="h-16 w-auto object-contain"
+                />
+              </picture>
             </Link>
 
             {/* Desktop Navigation */}

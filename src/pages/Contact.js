@@ -283,9 +283,12 @@ const Contact = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-2xl border border-white/50">
-                <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 mb-6 md:mb-8 text-center">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 mb-2 text-center">
                   Book Your <span className="text-gradient">Session</span>
                 </h2>
+                <p className="text-gray-600 text-center mb-6 md:mb-8">
+                  I usually respond within 24 hours.
+                </p>
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}

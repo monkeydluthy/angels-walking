@@ -103,11 +103,14 @@ const About = () => {
           >
             <div className="relative">
               <div className="w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                <img
-                  src="/gladys-3.jpg"
-                  alt="Gladys Schmanski, Spiritual Recovery Coach"
-                  className="w-full h-full object-cover object-[center_25%]"
-                />
+                <picture>
+                  <source srcSet="/gladys-3.webp" type="image/webp" />
+                  <img
+                    src="/gladys-3.jpg"
+                    alt="Gladys Schmanski, Spiritual Recovery Coach"
+                    className="w-full h-full object-cover object-[center_25%]"
+                  />
+                </picture>
               </div>
             </div>
           </motion.div>

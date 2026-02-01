@@ -18,6 +18,9 @@
       content="Gladys Schmanski - Angels Walking Spiritual Recovery"
     />
 
+    <!-- Canonical URL: use production URL so search/social are consistent -->
+    <link rel="canonical" href="https://www.angelswalking.com/" />
+
     <!-- Open Graph / Facebook: image shown when link is shared on Facebook, etc. -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.angelswalking.com/" />
@@ -29,7 +32,7 @@
       property="og:description"
       content="Transform your life with spiritual recovery coaching. Find healing, hope, and your highest possibility."
     />
-    <meta property="og:image" content="%PUBLIC_URL%/logo-transparent.png" />
+    <meta property="og:image" content="https://www.angelswalking.com/gladys-1.png" />
 
     <!-- Twitter: image shown when link is shared on Twitter/X -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -42,7 +45,7 @@
       property="twitter:description"
       content="Transform your life with spiritual recovery coaching. Find healing, hope, and your highest possibility."
     />
-    <meta property="twitter:image" content="%PUBLIC_URL%/logo-transparent.png" />
+    <meta property="twitter:image" content="https://www.angelswalking.com/gladys-1.png" />
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo-transparent.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -54,6 +57,55 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Structured data for search: LocalBusiness + Person -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://www.angelswalking.com/#organization",
+          "name": "Angels Walking",
+          "description": "Spiritual recovery coaching, life coaching, and angel card reading. Certified life coach helping you find healing, hope, and your highest possibility. Serving Orlando, FL and worldwide via Zoom.",
+          "url": "https://www.angelswalking.com/",
+          "telephone": "+1-407-782-5048",
+          "email": "gladys@angelswalking.com",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Orlando",
+            "addressRegion": "FL",
+            "postalCode": "32826",
+            "addressCountry": "US"
+          },
+          "areaServed": [
+            { "@type": "City", "name": "Orlando", "containedInPlace": { "@type": "State", "name": "Florida" } },
+            { "@type": "Country", "name": "United States" }
+          ],
+          "image": "https://www.angelswalking.com/gladys-1.png",
+          "priceRange": "$$",
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "opens": "10:00",
+            "closes": "20:00"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.angelswalking.com/#person",
+          "name": "Gladys Schmanski",
+          "jobTitle": "Certified Life Coach & Angel Card Reader",
+          "worksFor": { "@id": "https://www.angelswalking.com/#organization" },
+          "url": "https://www.angelswalking.com/",
+          "email": "gladys@angelswalking.com",
+          "telephone": "+1-407-782-5048",
+          "description": "Certified life coach and angel card reader specializing in spiritual recovery, addiction recovery support, and life coaching. Helping clients find healing and their highest possibility.",
+          "image": "https://www.angelswalking.com/gladys-1.png"
+        }
+      ]
+    }
+    </script>
 
     <title>
       Angels Walking - Spiritual Recovery & Life Coaching | Orlando, FL

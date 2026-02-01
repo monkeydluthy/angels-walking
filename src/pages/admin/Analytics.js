@@ -103,9 +103,9 @@ const Analytics = () => {
   return (
     <div>
       <PageMeta title="Admin - Analytics" />
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
@@ -363,7 +363,7 @@ const Analytics = () => {
               href="https://analytics.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center w-full justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+              className="inline-flex items-center w-full justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm whitespace-nowrap"
             >
               View Full Analytics Dashboard →
             </a>

@@ -125,11 +125,14 @@ const SpiritualRecovery = () => {
               </div>
               <div className="relative">
                 <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                  <img
-                    src="/spiritual-recovery.jpg"
-                    alt="Spiritual recovery: peace, hope, and connection with nature"
-                    className="w-full h-full object-cover object-center"
-                  />
+                  <picture>
+                    <source srcSet="/spiritual-recovery.webp" type="image/webp" />
+                    <img
+                      src="/spiritual-recovery.jpg"
+                      alt="Spiritual recovery: peace, hope, and connection with nature"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </picture>
                 </div>
               </div>
             </div>

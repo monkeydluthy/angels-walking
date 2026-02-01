@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { Sparkles, Mail, Lock } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageMeta from '../../components/PageMeta';
 
@@ -90,6 +90,15 @@ const AdminLogin = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+
+          <Link
+            to="/"
+            className="flex items-center justify-center gap-2 mt-6 text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium"
+            aria-label="Back to Angels Walking website"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to site
+          </Link>
         </form>
       </div>
     </div>

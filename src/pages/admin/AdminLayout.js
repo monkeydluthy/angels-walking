@@ -41,7 +41,7 @@ const AdminLayout = ({ children }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-16 lg:pt-20">
       {/* Mobile Header */}
       <div className="lg:hidden bg-white shadow-sm border-b">
         <div className="flex items-center justify-between p-4">
@@ -62,18 +62,18 @@ const AdminLayout = ({ children }) => {
         </div>
       </div>
 
-      <div className="flex">
-        {/* Sidebar */}
+      <div className="flex lg:h-[calc(100vh-5rem)]">
+        {/* Sidebar: fixed full height on desktop, overlay on mobile */}
         <aside
           id="admin-sidebar"
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:transition-none`}
+          } lg:translate-x-0 fixed inset-y-0 left-0 lg:top-20 lg:bottom-0 z-50 w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:transition-none flex flex-col`}
           aria-label="Admin navigation"
         >
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col min-h-0">
             {/* Logo */}
-            <div className="p-6 border-b">
+            <div className="p-6 border-b flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <div className="w-10 h-10 bg-spiritual-gradient rounded-full flex items-center justify-center">
                   <Sparkles className="w-6 h-6 text-white" />
@@ -86,7 +86,7 @@ const AdminLayout = ({ children }) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto min-h-0">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -108,7 +108,7 @@ const AdminLayout = ({ children }) => {
             </nav>
 
             {/* Logout */}
-            <div className="p-4 border-t">
+            <div className="p-4 border-t flex-shrink-0">
               <button
                 type="button"
                 onClick={handleLogout}
@@ -122,8 +122,8 @@ const AdminLayout = ({ children }) => {
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 lg:ml-0">
+        {/* Main Content: only this area scrolls on desktop */}
+        <main className="flex-1 min-h-0 overflow-y-auto lg:ml-64">
           <div className="p-6">{children}</div>
         </main>
       </div>

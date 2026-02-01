@@ -178,11 +178,14 @@ const AddictionRecovery = () => {
               </div>
               <div className="relative">
                 <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                  <img
-                    src="/addiction-recovery.png"
-                    alt="Addiction recovery: hope, freedom, and new beginnings"
-                    className="w-full h-full object-cover object-center"
-                  />
+                  <picture>
+                    <source srcSet="/addiction-recovery.webp" type="image/webp" />
+                    <img
+                      src="/addiction-recovery.png"
+                      alt="Addiction recovery: hope, freedom, and new beginnings"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </picture>
                 </div>
               </div>
             </div>

@@ -28,6 +28,9 @@ const HeroSection = () => {
                 </span>
               </div>
             </div>
+            <p className="text-sm text-gray-600 mb-4 text-center lg:text-left px-4 lg:px-0">
+              Serving Orlando & worldwide via Zoom
+            </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-gray-900 mb-6 leading-tight text-center lg:text-left">
               I'm calling time on the idea that you're{' '}
@@ -80,19 +83,22 @@ const HeroSection = () => {
 
           {/* Right Column - Visual Element */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            initial={{ opacity: 0, x: 50, scale: 0.98 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
             <div className="relative">
               {/* Hero Image */}
               <div className="relative w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                <img
-                  src="/gladys-1.png"
-                  alt="Gladys Schmanski, Spiritual Recovery Coach"
-                  className="w-full h-full object-cover object-center"
-                />
+                <picture>
+                  <source srcSet="/gladys-1.webp" type="image/webp" />
+                  <img
+                    src="/gladys-1.png"
+                    alt="Gladys Schmanski, Spiritual Recovery Coach"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </picture>
 
                 {/* Simple Location Badge */}
                 <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">

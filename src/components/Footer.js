@@ -133,7 +133,67 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Links Grid - Hidden on Mobile */}
+          {/* Mobile: single-column links, centered (visible on small screens only) */}
+          <div className="md:hidden mb-12 space-y-8 text-center">
+            <div>
+              <h4 className="text-lg font-serif font-bold text-white mb-4 flex items-center justify-center">
+                <Heart className="w-5 h-5 text-primary-400 mr-3" />
+                Services
+              </h4>
+              <ul className="space-y-3">
+                {footerLinks.services.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 hover:text-primary-300 transition-colors text-base"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <hr className="border-t border-white/20 mb-4 w-full" aria-hidden />
+              <h4 className="text-lg font-serif font-bold text-white mb-4 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-spiritual-400 mr-3" />
+                Resources
+              </h4>
+              <ul className="space-y-3">
+                {footerLinks.resources.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 hover:text-spiritual-300 transition-colors text-base"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <hr className="border-t border-white/20 mb-4 w-full" aria-hidden />
+              <h4 className="text-lg font-serif font-bold text-white mb-4 flex items-center justify-center">
+                <Phone className="w-5 h-5 text-healing-400 mr-3" />
+                Support
+              </h4>
+              <ul className="space-y-3">
+                {footerLinks.support.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 hover:text-healing-300 transition-colors text-base"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Links Grid - Desktop only */}
           <div className="hidden md:grid md:grid-cols-3 gap-12 mb-16">
             <div>
               <h4 className="text-xl font-serif font-bold text-white mb-6 flex items-center">
@@ -156,6 +216,7 @@ const Footer = () => {
             </div>
 
             <div>
+              <hr className="border-t border-white/20 mb-4 w-full" aria-hidden />
               <h4 className="text-xl font-serif font-bold text-white mb-6 flex items-center">
                 <Sparkles className="w-5 h-5 text-spiritual-400 mr-3" />
                 Resources
@@ -176,6 +237,7 @@ const Footer = () => {
             </div>
 
             <div>
+              <hr className="border-t border-white/20 mb-4 w-full" aria-hidden />
               <h4 className="text-xl font-serif font-bold text-white mb-6 flex items-center">
                 <Phone className="w-5 h-5 text-healing-400 mr-3" />
                 Support
@@ -198,6 +260,7 @@ const Footer = () => {
 
           {/* Social Links */}
           <div className="text-center mb-12">
+            <hr className="border-t border-white/20 mb-4 w-full" aria-hidden />
             <h5 className="text-lg font-semibold mb-6 text-gray-300 uppercase tracking-widest">
               Connect With Us
             </h5>
@@ -235,22 +298,22 @@ const Footer = () => {
                   All rights reserved
                 </p>
               </div>
-              <div className="flex flex-wrap justify-center lg:justify-end items-center space-x-8 text-sm">
+              <div className="flex flex-wrap justify-center lg:justify-end items-center gap-4 lg:gap-8 text-xs lg:text-sm">
                 <Link
                   to="/privacy"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium whitespace-nowrap"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   to="/terms"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium whitespace-nowrap"
                 >
                   Terms of Service
                 </Link>
                 <Link
                   to="/medical-disclaimer"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 font-medium whitespace-nowrap"
                 >
                   Medical Disclaimer
                 </Link>

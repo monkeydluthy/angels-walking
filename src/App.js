@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 // Components
@@ -33,6 +33,9 @@ import MedicalDisclaimer from './pages/MedicalDisclaimer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
   return (
     <div className="App min-h-screen flex flex-col">
       <ScrollToTop />
@@ -109,7 +112,7 @@ function App() {
           </Routes>
         </AnimatePresence>
       </main>
-      <Footer />
+      {!isAdmin && <Footer />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { BookOpen, FileText, Eye, TrendingUp } from 'lucide-react';
+import { BookOpen, FileText, Eye, TrendingUp, ArrowRight } from 'lucide-react';
 import PageMeta from '../../components/PageMeta';
 
 const Dashboard = () => {
@@ -116,11 +117,27 @@ const Dashboard = () => {
           Quick Actions
         </h2>
         <div className="space-y-2">
-          <p className="text-gray-600">
-            • Add new success story with image upload
-          </p>
-          <p className="text-gray-600">• View and manage form submissions</p>
-          <p className="text-gray-600">• Check analytics and insights</p>
+          <Link
+            to="/admin/success-stories"
+            className="flex items-center gap-2 text-gray-700 hover:text-primary-600 hover:underline transition-colors"
+          >
+            <ArrowRight className="w-4 h-4 flex-shrink-0" />
+            Add new success story with image upload
+          </Link>
+          <Link
+            to="/admin/submissions"
+            className="flex items-center gap-2 text-gray-700 hover:text-primary-600 hover:underline transition-colors"
+          >
+            <ArrowRight className="w-4 h-4 flex-shrink-0" />
+            View and manage form submissions
+          </Link>
+          <Link
+            to="/admin/analytics"
+            className="flex items-center gap-2 text-gray-700 hover:text-primary-600 hover:underline transition-colors"
+          >
+            <ArrowRight className="w-4 h-4 flex-shrink-0" />
+            Check analytics and insights
+          </Link>
         </div>
       </div>
     </div>

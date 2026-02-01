@@ -24,11 +24,14 @@ const AboutPreview = () => {
             <div className="relative">
               {/* About Image */}
               <div className="relative w-full h-96 md:h-[500px] rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                <img
-                  src="/gladys-2.png"
-                  alt="Gladys Schmanski, Spiritual Recovery Coach"
-                  className="w-full h-full object-cover object-center"
-                />
+                <picture>
+                  <source srcSet="/gladys-2.webp" type="image/webp" />
+                  <img
+                    src="/gladys-2.png"
+                    alt="Gladys Schmanski, Spiritual Recovery Coach"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </picture>
               </div>
 
               {/* Floating Elements */}

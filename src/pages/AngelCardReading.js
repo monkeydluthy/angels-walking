@@ -148,11 +148,14 @@ const AngelCardReading = () => {
               </div>
               <div className="relative">
                 <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                  <img
-                    src="/angel-cards.jpeg"
-                    alt="Angel oracle cards for divine guidance and spiritual readings"
-                    className="w-full h-full object-cover object-center"
-                  />
+                  <picture>
+                    <source srcSet="/angel-cards.webp" type="image/webp" />
+                    <img
+                      src="/angel-cards.jpeg"
+                      alt="Angel oracle cards for divine guidance and spiritual readings"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </picture>
                 </div>
               </div>
             </div>

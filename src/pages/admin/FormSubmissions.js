@@ -273,10 +273,10 @@ const FormSubmissions = () => {
   return (
     <div>
       <PageMeta title="Admin - Form Submissions" />
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Form Submissions</h1>
-        <div className="flex items-center space-x-2">
-          <Filter className="w-5 h-5 text-gray-600" />
+        <div className="flex items-center gap-2">
+          <Filter className="w-5 h-5 text-gray-600 flex-shrink-0" />
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -293,7 +293,11 @@ const FormSubmissions = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-        <table className="w-full">
+        <div
+          className="overflow-x-auto"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          <table className="w-full min-w-[700px]">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
@@ -425,6 +429,7 @@ const FormSubmissions = () => {
             ))}
           </tbody>
         </table>
+        </div>
 
         {submissions.length === 0 && (
           <div className="text-center py-12 text-gray-500">

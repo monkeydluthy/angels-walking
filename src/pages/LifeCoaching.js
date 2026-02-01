@@ -180,11 +180,14 @@ const LifeCoaching = () => {
               </div>
               <div className="relative">
                 <div className="w-full h-80 rounded-2xl shadow-2xl overflow-hidden bg-primary-100">
-                  <img
-                    src="/life-coaching.jpeg"
-                    alt="Life coaching: aspiration, growth, and reaching your full potential"
-                    className="w-full h-full object-cover object-center"
-                  />
+                  <picture>
+                    <source srcSet="/life-coaching.webp" type="image/webp" />
+                    <img
+                      src="/life-coaching.jpeg"
+                      alt="Life coaching: aspiration, growth, and reaching your full potential"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </picture>
                 </div>
               </div>
             </div>
