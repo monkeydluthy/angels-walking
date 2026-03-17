@@ -344,14 +344,14 @@ const Analytics = () => {
               key={page.path}
               className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-gray-500 w-6">
+              <div className="flex items-center space-x-3 min-w-0 flex-1">
+                <span className="text-sm font-medium text-gray-500 w-6 flex-shrink-0">
                   {index + 1}
                 </span>
-                <span className="text-gray-900 font-medium">{page.label}</span>
-                <span className="text-sm text-gray-500">{page.path}</span>
+                <span className="text-gray-900 font-medium truncate">{page.label}</span>
+                <span className="text-sm text-gray-500 hidden md:inline flex-shrink-0">{page.path}</span>
               </div>
-              <span className="text-lg font-bold text-primary-600">
+              <span className="text-lg font-bold text-primary-600 flex-shrink-0 ml-2">
                 {loading ? '…' : (page.views ?? 0)} views
               </span>
             </div>
